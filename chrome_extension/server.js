@@ -1,32 +1,26 @@
 const express = require('express');
+const fs = require('fs');
 const cors = require('cors'); 
 const app = express();
 const port = 3000;
-const fs = require('fs');
-const path = require('path')
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 app.post('/api/submit', (req, res) => {
-    const text = req.body.text;
-    console.log('Received text:', text);
-    // JSON 데이터 준비
-    const jsonData = { 
-        message: 'Text received successfully!',  // 응답 메시지
-        text: text  // 클라이언트로부터 받은 텍스트 데이터
-    };
+    const textData = req.body.textData;
+    if (!textData) {
+        return res.status(400).json({ error: 'No text data provided' });
+    }
 
-    // 파일 경로 설정
-    const filePath = path.join(__dirname, 'received_data.json');
+    console.log('Received text data:', textData);
 
-    // 파일에 JSON 데이터 저장
-    fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
+    const filePath = 'received_text.json';
+    fs.writeFile(filePath, JSON.stringify(textData, null, 2), (err) => {
         if (err) {
             console.error('Error writing file:', err);
-            return res.status(500).json({ error: 'Failed to write file' });
+            return res.status(500).json({ error: 'Failed to save file' });
         }
-        console.log('File has been saved:', filePath);
         res.json({ message: 'Text received and file saved successfully!' });
     });
 });
