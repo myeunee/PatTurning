@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Text Extractor with Server",
+  "version": "1.0",
+  "description": "Extracts all text from a webpage.",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "http://localhost:3000"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"  
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
