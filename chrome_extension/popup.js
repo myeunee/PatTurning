@@ -7,7 +7,7 @@ document.getElementById('extract').addEventListener('click', () => {
           console.error('Runtime error:', chrome.runtime.lastError.message);
           document.getElementById('output').textContent = 'Error: ' + chrome.runtime.lastError.message;
         } else {
-          if (response && response.text) {
+          if (response && response.textData) {
             document.getElementById('output').textContent = response.text;
           } else {
             console.error('Response error: Response is undefined or missing text.');
