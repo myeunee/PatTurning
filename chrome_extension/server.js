@@ -1,13 +1,17 @@
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors'); 
+const fs = require('fs');
+const { mongoDB } = require("./config/mongo_db");
+
 const app = express();
 const port = 3000;
+
+mongoDB();
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-app.post('/api/submit', (req, res) => {
+app.post('/dark-pattern/detection', (req, res) => {
     const textData = req.body.textData;
     if (!textData) {
         return res.status(400).json({ error: 'No text data provided' });

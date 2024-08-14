@@ -35,7 +35,8 @@ function extractTextWithXPath() {
 }
 
 function sendTextToServer(textData) {
-  fetch('http://localhost:3000/api/submit', {
+  console.log('Sending text data to server:', textData); // 데이터 확인
+  fetch('http://localhost:3000/dark-pattern/detection', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -49,7 +50,10 @@ function sendTextToServer(textData) {
     return response.json();
   })
   .then(data => {
-    console.log('Success:', data);
+    console.log('Server responded with:', data);
+    if (!data || !data.message) {
+      throw new Error('Response is undefined or missing text.');
+    }
   })
   .catch((error) => {
     console.error('Error:', error);
