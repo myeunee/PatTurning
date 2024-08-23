@@ -2,7 +2,7 @@ function sendMessage(action, successMessage, failureMessage) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, { action }, (response) => {
             if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
+                console.error('Runtime error:', chrome.runtime.lastError.message);
                 document.getElementById('status').innerText = "응답을 받을 수 없습니다.";
                 return;
             }            
