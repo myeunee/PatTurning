@@ -1,5 +1,6 @@
 // 1. 메시지 리스너 2개
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('Received request in background.js:', request);
     if (request.action === "fetchData") {
         fetchDataFromServer(request.xpath).then(data => {
             sendResponse({ data: data });
@@ -19,12 +20,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ error: 'Failed to fetch category and product ID' });
         });
         return true; // 비동기 응답을 사용하기 위해 true를 반환
+    } else {
+        console.log('Unknown action:', request.action);
     }
 });
 
 // 2. 서버에서 비동기로 데이터 가져오기
 // xpath를 사용해 서버에 데이터를 요청 후, 응답 후 json 형식으로 변환
 async function fetchDataFromServer(xpath) {
+    console.log('Fetching data from server with xpath:', xpath);
     try {
         const response = await fetch('https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io/dark-patterns', {
             method: 'POST',
@@ -38,7 +42,11 @@ async function fetchDataFromServer(xpath) {
             throw new Error('Failed to fetch data from server');
         }
         
-        return await response.json();
+        const data = await response.json();
+
+        console.log('Data received from server:', data);
+
+        return data;
     } catch (error) {
         console.error("Error fetching data from server:", error);
         return null;
