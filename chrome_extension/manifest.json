@@ -1,24 +1,23 @@
 {
-  "manifest_version": 3,
-  "name": "Text Extractor with Server",
-  "version": "1.0",
-  "description": "Extracts all text from a webpage.",
-  "permissions": [
-    "scripting",
-    "activeTab",
-    "http://localhost:3000"
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"  
-    }
-  ],
-  "action": {
-    "default_popup": "popup.html"
+    "manifest_version": 3,
+    "name": "Dark Pattern Detector",
+    "description": "Extension for Dark Pattern Detection",
+    "version": "1.0",
+    "permissions": ["activeTab", "scripting", "storage"],
+    "host_permissions": [
+        "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io/*"
+    ],
+    "background": {
+      "service_worker": "scripts/background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://mfront.homeplus.co.kr/*"],
+        "js": ["scripts/content-script.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup/popup.html",
+      "default_icon": "images/icon.png"
   }
 }
