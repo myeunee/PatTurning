@@ -3,9 +3,10 @@
     "name": "Dark Pattern Detector",
     "description": "Extension for Dark Pattern Detection",
     "version": "1.0",
-    "permissions": ["activeTab", "scripting", "storage"],
+    "permissions": ["activeTab", "scripting", "storage", "tabs"],
     "host_permissions": [
-        "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io/*"
+        "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io/*",
+        "https://mfront.homeplus.co.kr/*"
     ],
     "background": {
       "service_worker": "scripts/background.js"
