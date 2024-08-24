@@ -5,7 +5,7 @@ const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.i
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {
         const textData = extractTextWithXPath(); 
-        sendTextToServer(textData, mockServerUrl); // 이스케이프된 데이터를 서버로 전송
+        sendTextToServer(textData); // 이스케이프된 데이터를 서버로 전송
     }
 });
 
@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const textData = extractTextWithXPath();
         console.log('Extracted textData:', textData);
 
-        sendTextToServer(textData, mockServerUrl).then((data) => {
+        sendTextToServer(textData).then((data) => {
             console.log('Received data from server:', data);
 
             // data가 배열이고, 최소한 하나의 요소가 있는지 확인
@@ -52,7 +52,7 @@ initializePriceHoverListeners();
 
 ///////////// 다크패턴 함수 ////////////////
 // 다크패턴 탐지 요청
-async function sendTextToServer(textData, mockServerUrl) {
+async function sendTextToServer(textData) {
     try {
         const response = await fetch(`${mockServerUrl}/dark-patterns`, {
             method: 'POST',
@@ -68,7 +68,7 @@ async function sendTextToServer(textData, mockServerUrl) {
         }
 
         const data = await response.json();
-        console.log('Success:', data);
+        console.log('[Dark Pattern] Success:', data);
 
         displayDarkPatterns(data); // 데이터를 받은 후, 블러 처리 함수 호출
         return data; 
@@ -175,37 +175,118 @@ function extractTextWithXPath() {
 
 
 ///////// 가격 정보 함수 ////////////
-function initializePriceHoverListeners() {
-    let hoverTimer = null;
+function getCategoryNameFromXPath() {
+    const categoryElement = document.evaluate(
+        '//*[@id="site-wrapper"]/div[2]/div/div[1]/nav/ol/li[2]/div/button/span',
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+    ).singleNodeValue;
 
-    // mouseover 이벤트: 가격 위에 마우스를 올렸을 때 발생
-    document.addEventListener('mouseover', (event) => {
-        const target = event.target;
+    return categoryElement ? categoryElement.textContent.trim() : null;
+}
 
-        // 상품의 url이 포함된 a 태그 찾기
-        const linkElement = target.closest('a[href*="itemNo="]');
-        if (!linkElement) return;
+// url에서 productId를 추출
+function getProductId(url) {
+    const productIdMatch = url.match(/itemNo=(\d+)/);
+    return productIdMatch ? productIdMatch[1] : null;
+}
 
-        // 플랫폼 및 itemNo 추출
-        const platform = window.location.hostname.includes('homeplus') ? 'Homeplus' : 'Unknown';
-        const url = linkElement.href;
-        const itemNoMatch = url.match(/itemNo=(\d+)/);
-        if (!itemNoMatch) return;
 
-        const productId = itemNoMatch[1];
 
-        hoverTimer = setTimeout(() => {
-            // 상품페이지에서 categoryName, productId 추출
+
+// 1. 페이지에서 categoryName과 productId 추출
+async function fetchCategoryAndProductId() {
+    const categoryName = getCategoryNameFromXPath();
+    const url = window.location.href;
+    const productId = getProductId(url);
+
+    // URL에서 도메인을 기반으로 플랫폼 결정
+    let platform;
+    if (url.includes('mfront.homeplus.co.kr')) {
+        platform = 'Homeplus';
+    } else {
+        // ******** 지마켓, 포스티도 추가하기 *********
+        platform = 'Unknown'; 
+    }
+
+    console.log("[fetchCategoryAndProductId] productURL:", url, " productID:", productId);
+    
+    if (!productId) {
+        console.error('Product ID not found in URL');
+        return null;
+    }
+
+    if (!categoryName) {
+        console.error('Category name not found via XPath');
+        return null;
+    }
+
+    console.log('[fetchCategoryAndProductId] Extracted Category:', categoryName, 'Product ID:', productId);
+    return { categoryName, productId, platform };
+}
+
+
+// 2. MutationObserver를 사용하여 요소가 로드될 때까지 기다림
+function waitForCategoryAndProductId() {
+    const observer = new MutationObserver(async (mutations, obs) => {
+        const productInfo = await fetchCategoryAndProductId(); // categoryName, productId, platform
+        
+
+        if (productInfo) {
+            obs.disconnect(); // 요소를 찾으면 옵저버를 중지함
             chrome.runtime.sendMessage(
-                { action: 'fetchCategoryAndProductId', url },
+                { action: 'fetchPriceInfo', payload: productInfo },
                 (response) => {
-                    if (response && response.categoryName && response.productId) {
-                        fetchAndDisplayPriceHistory(platform, response.categoryName, response.productId, target);
+                    if (chrome.runtime.lastError) {
+                        console.error('Runtime error:', chrome.runtime.lastError.message);
+                        return;
+                    }
+                   
+                    if (response && response.status === 'success') {
+                        console.log('Price Info received:', response.data);
+                        fetchAndDisplayPriceHistory(productInfo.platform, productInfo.categoryName, productInfo.productId, document.body);
+                        
                     } else {
-                        console.error('Failed to get categoryName and productId:', response.error);
+                        console.error('Failed to get price info:', response.message);
+
                     }
                 }
             );
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+// 페이지 로드 시 카테고리와 제품 ID를 추출하는 함수 호출
+window.onload = function() {
+    waitForCategoryAndProductId();
+};
+
+
+// 가격 정보 표시 초기화
+function initializePriceHoverListeners() {
+    let hoverTimer = null;
+
+    document.addEventListener('mouseover', (event) => {
+        const target = event.target;
+        const linkElement = target.closest('a[href*="itemNo="]');
+        if (!linkElement) return;
+
+        const url = linkElement.href;
+        const productId = getProductId(url);
+
+        hoverTimer = setTimeout(async () => {
+            const productInfo = await fetchCategoryAndProductId();
+            console.log('[initializePriceHoverListeners] productInfo: ', productInfo);
+
+            if (productInfo) {
+                fetchAndDisplayPriceHistory('Homeplus', productInfo.categoryName, productInfo.productId, target);
+            } else {
+                console.error('Failed to fetch product information.');
+            }
         }, 2000); // 2초 후에 실행
     });
 
@@ -217,28 +298,49 @@ function initializePriceHoverListeners() {
     });
 }
 
+
+
 // 가격 변동 정보 요청 및 표시
 async function fetchAndDisplayPriceHistory(platform, categoryName, productId, target) {
     
-    // categoryName을 URL에 포함시키기 위해 인코딩
-    const encodedCategoryName = encodeURIComponent(categoryName);
-
+    console.log('Inside fetchAndDisplayPriceHistory', mockServerUrl);
+    
     try {
-        // 상품 이름에 한글, 특수문자가 포함된 경우 안전하게 URL에 포함시키기 위해 사용
-        const response = await fetch(`${mockServerUrl}/${platform}/${encodedCategoryName}/${productId}`);
-        if (!response.ok) {
-            throw new Error('가격 정보를 가져오지 못했습니다.');
+        console.log('mockServerUrl:', mockServerUrl);
+        console.log('platform:', platform);
+        console.log('categoryName:', categoryName);
+        console.log('encodedCategoryName:', encodeURIComponent(categoryName));
+        console.log('productId:', productId);
+
+        if (!categoryName) {
+            console.error('Category name is missing or undefined.');
+            return;
         }
+
+        const apiUrl = `${mockServerUrl}/price-info/${platform}/${encodeURIComponent(categoryName)}/${productId}`;
+        console.log('API URL:', apiUrl);
+
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch price history');
+        }      
+
         const data = await response.json();
         displayPriceHistory(data, target);
     } catch (error) {
-        console.error('가격 변동 정보를 가져오는 중 오류 발생:', error);
+        console.error('Error fetching and displaying price history:', error);
     }
 }
-
+    
 // 가격 변동 표시 박스 생성 및 표시
 function displayPriceHistory(data, target) {
-    if (!data) return;
+    if (!data) {
+        console.log('No price data available');
+        return;
+    }
+
+    console.log('Displaying price history:', data);
 
     const priceHistoryBox = document.createElement('div');
     priceHistoryBox.className = 'price-history-box';
@@ -259,3 +361,22 @@ function displayPriceHistory(data, target) {
         priceHistoryBox.remove();
     });
 }
+
+// DOM의 변화를 감지하고 특정 노드가 추가되었을 때 동작
+const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // 여기서 가격 요소를 찾고, 가격 변동 정보를 표시하는 함수를 호출
+                    const target = node.querySelector('a[href*="itemNo="]');
+                    if (target) {
+                        initializePriceHoverListeners();
+                    }
+                }
+            });
+        }
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
