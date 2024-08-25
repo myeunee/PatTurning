@@ -1,12 +1,18 @@
 function sendMessage(action, successMessage, failureMessage) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length === 0) {
+            console.error('No active tabs found');
+            document.getElementById('status').innerText = "활성 탭을 찾을 수 없습니다.";
+            return;
+        }
+
         chrome.tabs.sendMessage(tabs[0].id, { action }, (response) => {
             if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
+                console.error('Runtime error:', chrome.runtime.lastError.message);
                 document.getElementById('status').innerText = "응답을 받을 수 없습니다.";
                 return;
-            }            
-            
+            }
+
             console.log('Received response:', response);
 
             if (response) {
@@ -21,6 +27,7 @@ function sendMessage(action, successMessage, failureMessage) {
         });
     });
 }
+
 
 
 // 페이지가 갱신될 때마다 자동으로 요청함.
