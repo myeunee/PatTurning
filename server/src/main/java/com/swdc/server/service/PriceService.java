@@ -1,51 +1,66 @@
 package com.swdc.server.service;
 
-import com.swdc.server.domain.Category;
-import com.swdc.server.domain.Price;
-import com.swdc.server.domain.StoreData;
-import com.swdc.server.domain.Product;
-import com.swdc.server.repository.StoreDataRepository;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.swdc.server.domain.mongoDB.Product;
+import com.swdc.server.domain.mongoDB.collection.CategoryCollection;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
 public class PriceService {
-    private final StoreDataRepository storeDataRepository;
 
-    public Map<String, Integer> getPrices(String platform, String category_name, String product_id) {
-        // platform에 해당하는 StoreData 가져오기
-        Optional<StoreData> storeDataOptional = storeDataRepository.findByPlatform(platform);
+    private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
 
-        if (storeDataOptional.isPresent()) {
-            StoreData storeData = storeDataOptional.get();
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-            // categoryName에 해당하는 Category 찾기
-            Optional<Category> categoryOptional = storeData.getCategories().stream()
-                    .filter(category -> category.getCategory_name().equals(category_name))
-                    .findFirst();
+    public List<CategoryCollection> getCategories(String platform) {
+        String collectionName = platform + "_category_collection";
+        List<CategoryCollection> results = mongoTemplate.findAll(CategoryCollection.class, collectionName);
 
-            if (categoryOptional.isPresent()) {
-                Category category = categoryOptional.get();
-
-                // productId에 해당하는 Product 찾기
-                Optional<Product> productOptional = category.getProducts().stream()
-                        .filter(product -> product.getProduct_id().equals(product_id))
-                        .findFirst();
-
-                if (productOptional.isPresent()) {
-                    // prices 반환
-                    return productOptional.get().getPrices();
-                }
-            }
+        if (results == null) {
+            logger.error("Results not found");
+            return null; // 카테고리를 찾을 수 없는 경우 적절한 처리를 합니다.
         }
-        // 해당하는 데이터가 없으면 null 반환
-        return null;
+
+        return results;
     }
+
+    public Product getProductDetails(String platform, String category_name, String product_id) {
+
+        String productCollectionName = platform + "_product_coll";
+        String categoryCollectionName = platform + "_category_coll";
+
+        Query categoryQuery = new Query();
+        categoryQuery.addCriteria(Criteria.where("category_name").is(category_name));
+        categoryQuery.fields().include("_id").exclude("category_name");
+
+        CategoryCollection category = mongoTemplate.findOne(categoryQuery, CategoryCollection.class, categoryCollectionName);
+
+        Integer category_id = category.getId();
+
+        MatchOperation matchCategoryId = Aggregation.match(Criteria.where("category_id").is(category_id));
+        UnwindOperation unwindProducts = Aggregation.unwind("products");
+        MatchOperation matchProductId = Aggregation.match(Criteria.where("products.product_id").is(product_id));
+
+        Aggregation aggregation = Aggregation.newAggregation(matchCategoryId, unwindProducts, matchProductId);
+
+        AggregationResults<Product> results = mongoTemplate.aggregate(aggregation, productCollectionName, Product.class);
+
+        return results.getUniqueMappedResult();
+    }
+
 }
