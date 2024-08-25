@@ -12,20 +12,20 @@ import java.util.List;
 
 @NoArgsConstructor
 @RestController
-@RequestMapping("/dark-pattern")
+@RequestMapping("/dark-patterns")
 public class DarkPatternController {
-
-    @PostMapping("detection")
-    public List<DarkUI> detectDarkPattern(@RequestBody List<UI> request) {
-
-        private List<UI> input = request;
-        /**
-
-        request -> input -> model -> output -> response
-
-        **/
-        private List<UI> response = output;
-
-        return response;
-    }
+//    @PostMapping
+//    public List<DarkUI> detectDarkPattern(@RequestBody List<UI> request) {
+//        /**
+//        private List<UI> input = request;
+//
+//
+//        request -> input -> model -> output -> response
+//
+//
+//        private List<UI> response = output;
+//
+//         **/
+//        return response;
+//    }
 }
