@@ -1,0 +1,634 @@
+2024-08-24 00:51:02 [scrapy.utils.log] INFO: Scrapy 2.11.1 started (bot: crawl_gmarket)
+2024-08-24 00:51:02 [scrapy.utils.log] INFO: Versions: lxml 5.2.1.0, libxml2 2.12.6, cssselect 1.2.0, parsel 1.9.1, w3lib 2.1.2, Twisted 24.3.0, Python 3.11.7 (main, Dec  9 2023, 16:56:39) [Clang 15.0.0 (clang-1500.0.40.1)], pyOpenSSL 24.1.0 (OpenSSL 3.2.1 30 Jan 2024), cryptography 42.0.7, Platform macOS-14.5-arm64-arm-64bit
+2024-08-24 00:51:02 [scrapy.addons] INFO: Enabled addons:
+[]
+2024-08-24 00:51:02 [py.warnings] WARNING: /Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/request.py:254: ScrapyDeprecationWarning: '2.6' is a deprecated value for the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting.
+
+It is also the default value. In other words, it is normal to get this warning if you have not defined a value for the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting. This is so for backward compatibility reasons, but it will change in a future version of Scrapy.
+
+See the documentation of the 'REQUEST_FINGERPRINTER_IMPLEMENTATION' setting for information on how to handle this deprecation.
+  return cls(crawler)
+
+2024-08-24 00:51:02 [scrapy.extensions.telnet] INFO: Telnet Password: f8c78fb27bac72ec
+2024-08-24 00:51:02 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2024-08-24 00:51:02 [scrapy.crawler] INFO: Overridden settings:
+{'BOT_NAME': 'crawl_gmarket',
+ 'DOWNLOAD_DELAY': 0.21,
+ 'LOG_FILE': 'gmarket_2408240051.log',
+ 'LOG_LEVEL': 'INFO',
+ 'LOG_STDOUT': True,
+ 'NEWSPIDER_MODULE': 'crawl_gmarket.spiders',
+ 'ROBOTSTXT_OBEY': True,
+ 'SPIDER_MODULES': ['crawl_gmarket.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+               'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 '
+               'Safari/537.36'}
+2024-08-24 00:51:02 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2024-08-24 00:51:02 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2024-08-24 00:51:02 [scrapy.middleware] INFO: Enabled item pipelines:
+['crawl_gmarket.pipelines.MongoDBPipeline']
+2024-08-24 00:51:02 [scrapy.core.engine] INFO: Spider opened
+2024-08-24 00:51:02 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2024-08-24 00:51:02 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '1802755476', 'reg_price': None, 'sale_price': '36,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3688742131', 'reg_price': None, 'sale_price': '29,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2971808098', 'reg_price': None, 'sale_price': '19,200', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2597160261', 'reg_price': None, 'sale_price': '19,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '4067996090', 'reg_price': None, 'sale_price': '31,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3207708234', 'reg_price': None, 'sale_price': '39,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3087247578', 'reg_price': None, 'sale_price': '27,600', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3718403269', 'reg_price': None, 'sale_price': '29,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3164802003', 'reg_price': None, 'sale_price': '32,480', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3169159163', 'reg_price': None, 'sale_price': '45,050', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3606155030', 'reg_price': None, 'sale_price': '30,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3144409931', 'reg_price': None, 'sale_price': '29,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '4054583142', 'reg_price': None, 'sale_price': '34,300', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2899703632', 'reg_price': None, 'sale_price': '39,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3688977695', 'reg_price': None, 'sale_price': '17,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3404213356', 'reg_price': None, 'sale_price': '39,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2597160380', 'reg_price': None, 'sale_price': '15,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:04 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3180969499', 'reg_price': None, 'sale_price': '134,070', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3165939825', 'reg_price': None, 'sale_price': '107,910', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3655980553', 'reg_price': None, 'sale_price': '17,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '4059199212', 'reg_price': None, 'sale_price': '299,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3371781405', 'reg_price': None, 'sale_price': '15,600', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3740241127', 'reg_price': None, 'sale_price': '105,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2943986068', 'reg_price': None, 'sale_price': '15,640', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:05 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3093075264', 'reg_price': None, 'sale_price': '15,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3605610841', 'reg_price': None, 'sale_price': '39,200', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3837130548', 'reg_price': None, 'sale_price': '16,640', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3827131911', 'reg_price': None, 'sale_price': '19,800', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3293249362', 'reg_price': None, 'sale_price': '14,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2482093790', 'reg_price': None, 'sale_price': '12,600', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3028591062', 'reg_price': None, 'sale_price': '12,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '4088563882', 'reg_price': None, 'sale_price': '13,800', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3164258902', 'reg_price': None, 'sale_price': '59,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:06 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3861233064', 'reg_price': None, 'sale_price': '14,800', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:07 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2889529525', 'reg_price': None, 'sale_price': '3,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:07 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3525996014', 'reg_price': None, 'sale_price': '59,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:07 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3615274190', 'reg_price': None, 'sale_price': '39,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:07 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3087264124', 'reg_price': None, 'sale_price': '39,500', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:08 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3047264301', 'reg_price': None, 'sale_price': '65,550', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:08 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '2973548662', 'reg_price': None, 'sale_price': '59,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:08 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3678496187', 'reg_price': None, 'sale_price': '53,100', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3322800187', 'reg_price': None, 'sale_price': '19,700', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3322804657', 'reg_price': None, 'sale_price': '13,100', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3322805426', 'reg_price': None, 'sale_price': '7,700', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323371476', 'reg_price': None, 'sale_price': '25,200', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323371562', 'reg_price': None, 'sale_price': '22,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323372531', 'reg_price': None, 'sale_price': '9,200', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323374986', 'reg_price': None, 'sale_price': '24,300', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323375085', 'reg_price': None, 'sale_price': '20,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:09 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3516011464', 'reg_price': None, 'sale_price': '41,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3323829620', 'reg_price': None, 'sale_price': '20,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3516011491', 'reg_price': None, 'sale_price': '41,400', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3752090992', 'reg_price': None, 'sale_price': '52,800', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3752130035', 'reg_price': None, 'sale_price': '35,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3756937558', 'reg_price': None, 'sale_price': '33,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3756938234', 'reg_price': None, 'sale_price': '47,200', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.crawler] INFO: Received SIGINT, shutting down gracefully. Send again to force 
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3324226780', 'reg_price': None, 'sale_price': '21,900', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3324230605', 'reg_price': None, 'sale_price': '30,700', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3324231303', 'reg_price': None, 'sale_price': '31,100', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3324234410', 'reg_price': None, 'sale_price': '33,000', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3094866555', 'reg_price': None, 'sale_price': '83,300', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3099197781', 'reg_price': None, 'sale_price': '74,420', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3099210192', 'reg_price': None, 'sale_price': '50,360', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.core.scraper] ERROR: Error processing {'category_id': 100000099, 'category_name': '브랜드 아웃도어', 'product_id': '3099279216', 'reg_price': None, 'sale_price': '85,390', 'date': '2024-08-24'}
+Traceback (most recent call last):
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/twisted/internet/defer.py", line 1078, in _runCallbacks
+    current.result = callback(  # type: ignore[misc]
+  File "/Users/gu/.pyenv/versions/dsenv/lib/python3.11/site-packages/scrapy/utils/defer.py", line 340, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/Users/gu/Dev/Project/OpenSW-Contest/test-space/crawl_gmarket/crawl_gmarket/pipelines.py", line 39, in process_item
+    reg_price = int(reg_price.replace(",", ""))
+AttributeError: 'NoneType' object has no attribute 'replace'
+2024-08-24 00:51:10 [scrapy.crawler] INFO: Received SIGINT twice, forcing unclean shutdown
+2024-08-24 00:51:11 [scrapy.core.engine] INFO: Closing spider (shutdown)
+2024-08-24 00:51:11 [scrapy.core.downloader.handlers.http11] WARNING: Got data loss in https://www.gmarket.co.kr/n/list?category=300012129&s=8&p=16. If you want to process broken responses set the setting DOWNLOAD_FAIL_ON_DATALOSS = False -- This message won't be shown in further requests
+2024-08-24 00:51:11 [scrapy.core.downloader.handlers.http11] WARNING: Got data loss in https://www.gmarket.co.kr/n/list?category=300012129&s=8&p=17. If you want to process broken responses set the setting DOWNLOAD_FAIL_ON_DATALOSS = False -- This message won't be shown in further requests
