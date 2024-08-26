@@ -5,10 +5,6 @@
     "version": "1.0",
     "permissions": ["activeTab", "scripting", "storage", "tabs"],
     "host_permissions": [
-        "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io/*",
-        "http://52.78.128.233/dark-patterns",
-        "http://54.174.27.101:8090/*",
-        "https://mfront.homeplus.co.kr/*"
     ],
     "background": {
       "service_worker": "scripts/background.js"
