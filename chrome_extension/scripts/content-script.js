@@ -1,6 +1,6 @@
-// **** 테스트 **** : Postman Mock 서버 URL
 const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io";
-
+const darkUrl = "http://52.78.128.233/dark-patterns";
+const priceUrl = "http://54.174.27.101:8090";
 
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
@@ -56,7 +56,7 @@ initializePriceHoverListeners();
 // 다크패턴 탐지 요청
 async function sendTextToServer(textData) {
     try {
-        const response = await fetch(`https://52.78.128.233/dark-patterns`, {
+        const response = await fetch(`${darkUrl}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -172,7 +172,6 @@ function getElementXPath(element) {
 // 페이지에서 텍스트와 XPath를 추출하여 배열로 반환
 function extractTextWithXPath() {
     const results = [];
-
     const nodes = document.evaluate('//body//*[not(self::script or self::style)]/text()[normalize-space()]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
     for (let i = 0; i < nodes.snapshotLength; i++) {
@@ -181,6 +180,8 @@ function extractTextWithXPath() {
         if (text) {
             let xpath = getElementXPath(node.parentNode);
             xpath = escapeXPath(xpath); // getElementXPath에서 생성된 XPath를 이스케이프 처리
+            console.log('[extractTextWithXPath] 모델에 보낼 XPath:', xpath); // XPath 로깅
+            console.log('XPath 변수의 유형:', typeof xpath); // XPath의 데이터 유형 출력
             results.push({ text: text, xpath: xpath });
         }
     }
@@ -242,14 +243,14 @@ async function fetchCategoryAndProductId() {
     }
 
     console.log('[fetchCategoryAndProductId] Extracted Category:', categoryName, 'Product ID:', productId);
-    return { categoryName, productId, platform };
+    return { platform, productId, categoryName };
 }
 
 
 // 2. MutationObserver를 사용하여 요소가 로드될 때까지 기다림
 function waitForCategoryAndProductId() {
     const observer = new MutationObserver(async (mutations, obs) => {
-        const productInfo = await fetchCategoryAndProductId(); // categoryName, productId, platform
+        const productInfo = await fetchCategoryAndProductId();
         
 
         if (productInfo) {
@@ -261,13 +262,15 @@ function waitForCategoryAndProductId() {
                         console.error('Runtime error:', chrome.runtime.lastError.message);
                         return;
                     }
-                   
+
+                    console.log('[waitForCategoryAndProductId] response: ', response);
+                    console.log('[waitForCategoryAndProductId] response.status: ', response.status);
                     if (response && response.status === 'success') {
                         console.log('Price Info received:', response.data);
                         fetchAndDisplayPriceHistory(productInfo.platform, productInfo.categoryName, productInfo.productId, document.body);
                         
                     } else {
-                        console.error('Failed to get price info:', response.message);
+                        console.error('[waitForCategoryAndProductId] 가격 정보 못 받음:', response.message);
 
                     }
                 }
@@ -389,12 +392,11 @@ async function fetchAndDisplayPriceHistory(platform, categoryName, productId, ta
     
     try {
         console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓')
-        console.log('mockServerUrl:', mockServerUrl);
+        console.log('priceUrl:', priceUrl);
         console.log('platform:', platform);
         console.log('categoryName:', categoryName);
-        console.log('encodedCategoryName:', encodeURIComponent(categoryName));
         console.log('productId:', productId);
-        const apiUrl = `${mockServerUrl}/price-info/${platform}/${encodeURIComponent(categoryName)}/${productId}`;
+        const apiUrl = `${priceUrl}/price-info/${platform}/${productId}/${categoryName}`;
         console.log('API URL:', apiUrl);
         console.log('〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓')
 
