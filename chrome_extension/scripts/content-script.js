@@ -1,6 +1,7 @@
 // **** 테스트 **** : Postman Mock 서버 URL
 const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io";
 
+
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {
@@ -8,6 +9,7 @@ chrome.storage.local.get("darkPatternDetection", (result) => {
         sendTextToServer(textData); // 이스케이프된 데이터를 서버로 전송
     }
 });
+
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('Received message in content-script.js:', request.action);
@@ -54,13 +56,15 @@ initializePriceHoverListeners();
 // 다크패턴 탐지 요청
 async function sendTextToServer(textData) {
     try {
-        const response = await fetch(`${mockServerUrl}/dark-patterns`, {
+        const response = await fetch(`https://52.78.128.233/dark-patterns`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(textData)
         });
+
+
 
         if (!response.ok) {
             const errorData = await response.json(); // 오류메시지를 가져옴
@@ -73,7 +77,7 @@ async function sendTextToServer(textData) {
         displayDarkPatterns(data); // 데이터를 받은 후, 블러 처리 함수 호출
         return data; 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('[sendTextToServer] 오류:', error);
         return null; // 오류 발생시 null 반환
     }
 }
@@ -117,6 +121,19 @@ function removeBlurEffects() {
         element.style.filter = '';
     });
 }
+
+// 페이지의 DOM이 완전히 로드되면 바로 다크패턴 검사
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded and parsed");
+    detectDarkPatterns();  // 다크 패턴 탐지 함수 호출
+});
+
+function detectDarkPatterns() {
+    const textData = extractTextWithXPath(); 
+    sendTextToServer(textData); // 추출된 데이터를 서버로 전송하여 다크 패턴 분석
+}
+
+
 
 
 //////////// 공통 함수 //////////////
@@ -175,6 +192,7 @@ function extractTextWithXPath() {
 
 
 ///////// 가격 정보 함수 ////////////
+// 카테고리 추출
 function getCategoryNameFromXPath() {
     const categoryElement = document.evaluate(
         '//*[@id="site-wrapper"]/div[2]/div/div[1]/nav/ol/li[2]/div/button/span',
@@ -260,10 +278,35 @@ function waitForCategoryAndProductId() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// 페이지 로드 시 카테고리와 제품 ID를 추출하는 함수 호출
-window.onload = function() {
-    waitForCategoryAndProductId();
-};
+// 페이지 로드 시 두 함수(제품 정보, 가격 정보 받아오기)를 모두 호출
+window.addEventListener('load', function() {
+    waitForCategoryAndProductId();  // 제품 정보 및 가격 정보 초기화
+    initializeDarkPatternDetection();  // 다크 패턴 탐지 초기화
+    initializePriceInfoDisplay();  // 가격 정보 표시 초기화
+});
+
+
+function initializeDarkPatternDetection() {
+    chrome.storage.local.get("darkPatternDetection", (result) => {
+        if (result.darkPatternDetection) {
+            detectDarkPatterns(); // 페이지 로드 시 다크 패턴 탐지 실행
+        }
+    });
+}
+
+function initializePriceInfoDisplay() {
+    const target = document.evaluate('//*[@id="site-wrapper"]/div[2]/div/div[2]/div[2]/div[1]/div[3]/div[1]/div', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    if (target) {
+        console.log('가격 태그 발견');
+        fetchCategoryAndProductId().then(productInfo => {
+            if (productInfo) {
+                fetchAndDisplayPriceHistory(productInfo.platform, productInfo.categoryName, productInfo.productId, target);
+            }
+        });
+    } else {
+        console.log('[initializePriceInfoDisplay] 가격 태그 발견 못 함');
+    }
+}
 
 
 // 가격 정보 표시 초기화
@@ -298,27 +341,67 @@ function initializePriceHoverListeners() {
     });
 }
 
+function displayPriceHistory(data, target) {
+    if (!data) {
+        console.log('No price data available');
+        return;
+    }
+
+    console.log('[displayPriceHistory] 가격 정보: ', data);
+
+    const priceHistoryBox = document.createElement('div');
+    priceHistoryBox.className = 'price-history-box';
+    priceHistoryBox.style.position = 'fixed';
+    priceHistoryBox.style.right = '20px';
+    priceHistoryBox.style.top = '20px';
+    priceHistoryBox.style.border = '1px solid #ccc';
+    priceHistoryBox.style.background = 'white';
+    priceHistoryBox.style.padding = '10px';
+    priceHistoryBox.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+    priceHistoryBox.style.width = '300px';
+    priceHistoryBox.style.zIndex = '1000';
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'X';
+    closeButton.style.float = 'right';
+    closeButton.style.border = 'none';
+    closeButton.style.background = 'none';
+    closeButton.onclick = function() {
+        priceHistoryBox.remove();
+    };
+    priceHistoryBox.appendChild(closeButton);
+
+    const title = document.createElement('div');
+    title.textContent = '가격 변동 정보';
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '10px';
+    priceHistoryBox.appendChild(title);
+
+    const prices = Object.entries(data[0].prices).map(([date, price]) => `${date}: ${price}원`).join('<br>');
+    priceHistoryBox.innerHTML += prices;
+    document.body.appendChild(priceHistoryBox);
+}
+
 
 
 // 가격 변동 정보 요청 및 표시
 async function fetchAndDisplayPriceHistory(platform, categoryName, productId, target) {
     
-    console.log('Inside fetchAndDisplayPriceHistory', mockServerUrl);
-    
     try {
+        console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓')
         console.log('mockServerUrl:', mockServerUrl);
         console.log('platform:', platform);
         console.log('categoryName:', categoryName);
         console.log('encodedCategoryName:', encodeURIComponent(categoryName));
         console.log('productId:', productId);
+        const apiUrl = `${mockServerUrl}/price-info/${platform}/${encodeURIComponent(categoryName)}/${productId}`;
+        console.log('API URL:', apiUrl);
+        console.log('〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓')
 
         if (!categoryName) {
             console.error('Category name is missing or undefined.');
             return;
         }
-
-        const apiUrl = `${mockServerUrl}/price-info/${platform}/${encodeURIComponent(categoryName)}/${productId}`;
-        console.log('API URL:', apiUrl);
 
         const response = await fetch(apiUrl);
 
@@ -333,50 +416,19 @@ async function fetchAndDisplayPriceHistory(platform, categoryName, productId, ta
     }
 }
     
-// 가격 변동 표시 박스 생성 및 표시
-function displayPriceHistory(data, target) {
-    if (!data) {
-        console.log('No price data available');
-        return;
+
+
+
+
+// 페이지가 로드될 때마다 다크패턴 탐지, 가격 정보 갱신
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === "fetchNewPriceInfo") {
+        console.log('Fetching price info for new URL...');
+        waitForCategoryAndProductId();  // 기존에 작성한 함수를 재사용
+        sendResponse({status: 'Price fetching initiated'});
     }
-
-    console.log('Displaying price history:', data);
-
-    const priceHistoryBox = document.createElement('div');
-    priceHistoryBox.className = 'price-history-box';
-
-    // 가격 변동 데이터 추가
-    const prices = Object.entries(data[0].prices).map(([date, price]) => `${date}: ${price}원`).join('<br/>');
-    priceHistoryBox.innerHTML = `가격 변동:<br/>${prices}`;
-
-    document.body.appendChild(priceHistoryBox);
-
-    // 가격 위에 위치 조정
-    const rect = target.getBoundingClientRect();
-    priceHistoryBox.style.left = `${rect.right + 10}px`; // 가격 옆
-    priceHistoryBox.style.top = `${rect.top}px`;
-
-    // 마우스 떼면 박스 제거
-    target.addEventListener('mouseout', () => {
-        priceHistoryBox.remove();
-    });
-}
-
-// DOM의 변화를 감지하고 특정 노드가 추가되었을 때 동작
-const observer = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-        if (mutation.addedNodes.length > 0) {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    // 여기서 가격 요소를 찾고, 가격 변동 정보를 표시하는 함수를 호출
-                    const target = node.querySelector('a[href*="itemNo="]');
-                    if (target) {
-                        initializePriceHoverListeners();
-                    }
-                }
-            });
-        }
+    else if (request.action === "detectDarkPatterns") {
+        detectDarkPatterns();  // 다크 패턴 탐지 실행
+        sendResponse({status: 'Detection started'});
     }
 });
-
-observer.observe(document.body, { childList: true, subtree: true });
