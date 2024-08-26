@@ -25,5 +25,5 @@ RUN /bin/bash -c "source $HOME/.cargo/env && pip install --no-cache-dir -r requi
 RUN pip install gunicorn
 
 # Flask 애플리케이션 실행
-EXPOSE 5000
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000", "-w", "2","--timeout", "120"]
+EXPOSE 80
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "-w", "2","--timeout", "120"]
