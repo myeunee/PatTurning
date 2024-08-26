@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class PriceService {
         return results;
     }
 
-    public Product getProductDetails(String platform, String category_name, String product_id) {
+    public List<Map<String, Integer>> getProductDetails(String platform, String category_name, String product_id) {
 
         String productCollectionName = platform + "_product_coll";
         String categoryCollectionName = platform + "_category_coll";
@@ -60,7 +61,9 @@ public class PriceService {
 
         AggregationResults<Product> results = mongoTemplate.aggregate(aggregation, productCollectionName, Product.class);
 
-        return results.getUniqueMappedResult();
+        Product product = results.getUniqueMappedResult();
+
+        return product.getPrices();
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.util.UriUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,7 +27,7 @@ public class PriceController {
     private final PriceService priceService;
 
     @GetMapping("{platform}/{product_id}/**")
-    public Product getPriceInfo(@PathVariable String platform, HttpServletRequest request, @PathVariable String product_id) {
+    public List<Map<String, Integer>> getPriceInfo(@PathVariable String platform, HttpServletRequest request, @PathVariable String product_id) {
         String restOfPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String category_name = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, restOfPath);
