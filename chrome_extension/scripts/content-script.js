@@ -1,7 +1,3 @@
-const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io";
-const darkUrl = "http://52.78.128.233/dark-patterns";
-const priceUrl = "http://54.174.27.101:8090";
-
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {
