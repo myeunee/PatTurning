@@ -1,15 +1,26 @@
-// **** 테스트 **** : Postman Mock 서버 URL
 const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io";
+const darkUrl = "http://52.78.128.233/dark-patterns";
+const priceUrl = "http://54.174.27.101:8090";
 
 // 1. 메시지 리스너
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('Received request in background.js:', request);
 
-    if (request.action === 'fetchDarkPatterns' || request.action === 'fetchPriceInfo') {
+    if (request.action === 'fetchDarkPatterns') {
         fetchDataFromServer(request.action, request.payload)
             .then(data => sendResponse({ status: 'success', data }))
             .catch(error => {
-                console.error(`Error fetching data from server for action ${request.action}:`, error);
+                console.error(`[백그라운드 - 다크패턴] Error fetching data from server for action ${request.action}:`, error);
+                sendResponse({ status: 'error', message: error.message });
+            });
+    } 
+
+    else if (request.action === 'fetchPriceInfo') {
+
+        fetchDataFromServer(request.action, request.payload)
+            .then(data => sendResponse({ status: 'success', data }))
+            .catch(error => {
+                console.error(`[백그라운드 - 가격 불러오기] Error fetching data from server for action ${request.action}:`, error);
                 sendResponse({ status: 'error', message: error.message });
             });
     } 
@@ -23,17 +34,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // 2. 서버에서 비동기로 데이터 가져오기
+// action에 따라 해당 서버로 요청
 async function fetchDataFromServer(action, payload) {
     let url, options;
     if (action === "fetchDarkPatterns") {
-        url = `https://52.78.128.233/dark-patterns`;
+        url = darkUrl;
         options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) };
     } 
     
     else if (action === "fetchPriceInfo") {
-        const { platform, categoryName, productId } = payload;
-        const encodedCategoryName = encodeURIComponent(categoryName);
-        url = `${mockServerUrl}/price-info/${platform}/${encodedCategoryName}/${productId}`;
+        const { platform, productId, categoryName } = payload;
+        url = `${priceUrl}/price-info/${platform}/${productId}/${categoryName}`;
+        console.log('[백그라운드] priceUrl: ', url);
         options = { method: 'GET' };
     } 
     
