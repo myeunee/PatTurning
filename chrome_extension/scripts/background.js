@@ -1,7 +1,3 @@
-const mockServerUrl = "https://daf1a148-1754-4c0d-a727-c240d6f6c0e5.mock.pstmn.io";
-const darkUrl = "http://52.78.128.233/dark-patterns";
-const priceUrl = "http://54.174.27.101:8090";
-
 // 1. 메시지 리스너
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('Received request in background.js:', request);
