@@ -1,3 +1,9 @@
+/**
+ *
+ *  Product_price_db와 상호작용하는 service
+ *
+ */
+
 package com.swdc.server.service;
 
 import com.swdc.server.domain.mongoDB.Price;
@@ -29,6 +35,11 @@ public class PriceService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     *
+     *  {platform}_category_coll에 저장된 모든 category 반환
+     *
+     */
     public List<CategoryCollection> getCategories(String platform) {
         String collectionName = platform + "_category_collection";
         List<CategoryCollection> results = mongoTemplate.findAll(CategoryCollection.class, collectionName);
@@ -41,6 +52,12 @@ public class PriceService {
         return results;
     }
 
+    /**
+     *
+     *  platform, category_name, product_id에 해당하는
+     *  상품의 가격 정보를 Product_price_db에서 쿼리문으로 탐색 후 반환
+     *
+     */
     public Price getProductDetails(String platform, String category_name, String product_id) {
 
         String productCollectionName = platform + "_product_coll";

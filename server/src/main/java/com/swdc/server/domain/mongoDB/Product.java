@@ -1,3 +1,9 @@
+/**
+ *
+ *  _product_coll에 포함되는 products(List)의 구성요소
+ *
+ */
+
 package com.swdc.server.domain.mongoDB;
 
 import lombok.Getter;
