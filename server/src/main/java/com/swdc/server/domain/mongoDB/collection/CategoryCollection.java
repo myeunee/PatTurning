@@ -1,3 +1,9 @@
+/**
+ *
+ *  Product_price_db의 collection인 {platform}_category_coll에 해당
+ *
+ */
+
 package com.swdc.server.domain.mongoDB.collection;
 
 import lombok.Getter;
