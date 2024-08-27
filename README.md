@@ -1,4 +1,4 @@
-# Dark-Pattern-Detection-SWDeveloperContest
+# Dark-Pattern-Detection-SWDeveloperContest-18th
 
 ## 개발 배경
 >이커머스 시장이 점점 커져감에 따라, 사용자의 행동을 유도하거나 혼란을 야기하여 비합리적인 결정을 내리게 만드는 **다크 패턴** 문제가 대두되고 있다. 해당 팀은 다크패턴을 사전에 감지하고 필터링함으로써, 소비자를 보호하며 윤리적인 웹 소비 환경을 조성하고자 한다.
