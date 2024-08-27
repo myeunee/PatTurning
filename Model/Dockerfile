@@ -12,11 +12,6 @@ RUN apt-get update && apt-get install -y \
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 필요 파일 복사
-COPY clf_model.h5 /app/
-COPY tokenizer.pickle /app/
-COPY app.py /app/
-
 # 필요한 Python 패키지 설치
 COPY requirements.txt /app/
 RUN pip install --upgrade pip
@@ -25,5 +20,5 @@ RUN /bin/bash -c "source $HOME/.cargo/env && pip install --no-cache-dir -r requi
 RUN pip install gunicorn
 
 # Flask 애플리케이션 실행
-EXPOSE 80
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "-w", "2","--timeout", "120"]
+EXPOSE 5000
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000", "-w", "2","--timeout", "120"]
