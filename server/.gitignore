@@ -38,3 +38,4 @@ out/
 
 src/main/resources/application.properties
 src/main/java/com/swdc/server/domain/mongoDB/config/mongoConfig.java
+src/main/java/com/swdc/server/config/WebConfig.java

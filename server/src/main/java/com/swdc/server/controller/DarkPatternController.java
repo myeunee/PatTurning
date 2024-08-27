@@ -3,10 +3,7 @@ package com.swdc.server.controller;
 import com.swdc.server.domain.darkPattern.DarkUI;
 import com.swdc.server.domain.darkPattern.UI;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

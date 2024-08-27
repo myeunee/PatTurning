@@ -45,11 +45,19 @@ public class PriceService {
         String productCollectionName = platform + "_product_coll";
         String categoryCollectionName = platform + "_category_coll";
 
+        logger.info("Searching for category: " + category_name + " in collection: " + categoryCollectionName);
+
+
         Query categoryQuery = new Query();
         categoryQuery.addCriteria(Criteria.where("category_name").is(category_name));
         categoryQuery.fields().include("_id").exclude("category_name");
 
         CategoryCollection category = mongoTemplate.findOne(categoryQuery, CategoryCollection.class, categoryCollectionName);
+
+        if (category == null) {
+            logger.error("Category not found for category_name: " + category_name);
+            throw new RuntimeException("Category not found for category_name: " + category_name);
+        }
 
         Integer category_id = category.getId();
 
@@ -62,6 +70,11 @@ public class PriceService {
         AggregationResults<Product> results = mongoTemplate.aggregate(aggregation, productCollectionName, Product.class);
 
         Product product = results.getUniqueMappedResult();
+
+        if (product == null) {
+            logger.error("Product not found for product_id: " + product_id);
+            throw new RuntimeException("Product not found for product_id: " + product_id);
+        }
 
         return product.getPrices();
     }
