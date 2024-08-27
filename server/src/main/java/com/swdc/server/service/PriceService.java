@@ -1,5 +1,6 @@
 package com.swdc.server.service;
 
+import com.swdc.server.domain.mongoDB.Price;
 import com.swdc.server.domain.mongoDB.Product;
 import com.swdc.server.domain.mongoDB.collection.CategoryCollection;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class PriceService {
         return results;
     }
 
-    public List<Map<String, Integer>> getProductDetails(String platform, String category_name, String product_id) {
+    public Price getProductDetails(String platform, String category_name, String product_id) {
 
         String productCollectionName = platform + "_product_coll";
         String categoryCollectionName = platform + "_category_coll";
@@ -76,7 +77,12 @@ public class PriceService {
             throw new RuntimeException("Product not found for product_id: " + product_id);
         }
 
-        return product.getPrices();
-    }
+        List<Map<String, Integer>> prices = product.getPrices();
 
+        Price priceInfo = Price.builder()
+                .prices(prices)
+                .build();
+
+        return priceInfo;
+    }
 }
