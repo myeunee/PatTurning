@@ -1,6 +1,6 @@
 # Dark-Pattern-Detection-SWDeveloperContest-18th
 
- <p align="center"><img src="https://github.com/user-attachments/assets/ae99a8bc-cf22-4a3a-a864-0a885c717815" alt="logo" width=60%></p>
+ <p align="center"><img src="https://github.com/user-attachments/assets/5c5e9755-95cf-49cf-96a4-b13ce6b2fd20" alt="logo" width=60%></p>
 
 ***
 
