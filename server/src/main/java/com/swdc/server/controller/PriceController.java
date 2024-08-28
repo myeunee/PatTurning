@@ -42,4 +42,9 @@ public class PriceController {
 
         return priceService.getProductDetails(platform, category_name, product_id);
     }
+
+    @GetMapping("{platform}/{product_id}")
+    public Price getPriceInfo(@PathVariable String platform, @PathVariable String product_id) {
+        return priceService.getProductDetailsWithoutCategory(platform, product_id);
+    }
 }

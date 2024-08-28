@@ -9,6 +9,7 @@ package com.swdc.server.service;
 import com.swdc.server.domain.mongoDB.Price;
 import com.swdc.server.domain.mongoDB.Product;
 import com.swdc.server.domain.mongoDB.collection.CategoryCollection;
+import com.swdc.server.domain.mongoDB.collection.ProductCollection;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,13 +87,42 @@ public class PriceService {
         Aggregation aggregation = Aggregation.newAggregation(matchCategoryId, unwindProducts, matchProductId);
 
         AggregationResults<Product> results = mongoTemplate.aggregate(aggregation, productCollectionName, Product.class);
-
         Product product = results.getUniqueMappedResult();
 
         if (product == null) {
             logger.error("Product not found for product_id: " + product_id);
             throw new RuntimeException("Product not found for product_id: " + product_id);
         }
+
+        List<Map<String, Integer>> prices = product.getPrices();
+
+        Price priceInfo = Price.builder()
+                .prices(prices)
+                .build();
+
+        return priceInfo;
+    }
+
+    /**
+     *
+     *  platform, product_id에 해당하는
+     *  상품의 가격 정보를 Product_price_db에서 쿼리문으로 탐색 후 반환
+     *  ({platform}_product_coll에서 전수탐색)
+     *
+     */
+    public Price getProductDetailsWithoutCategory(String platform, String product_id) {
+        String productCollectionName = platform + "_product_coll";
+
+        logger.info("Searching for category: " + product_id + " in collection: " + productCollectionName);
+
+        List<ProductCollection> productColl = mongoTemplate.findAll(ProductCollection.class, productCollectionName);
+
+        UnwindOperation unwindProducts = Aggregation.unwind("products");
+        MatchOperation matchProductId = Aggregation.match(Criteria.where("products.product_id").is(product_id));
+        Aggregation aggregation = Aggregation.newAggregation(unwindProducts, matchProductId);
+
+        AggregationResults<Product> results = mongoTemplate.aggregate(aggregation, productCollectionName, Product.class);
+        Product product = results.getUniqueMappedResult();
 
         List<Map<String, Integer>> prices = product.getPrices();
 
