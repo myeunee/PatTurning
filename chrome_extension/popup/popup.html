@@ -1,21 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-        <link rel="stylesheet" href="../styles/popup.css" />
-    </head>
-    <body>    
-        <h1>다크패턴 감지기</h1>
-        <div>
-            <button id="detect-button">ON</button>
-            <button id="release-button">OFF</button>
-            <div id="status"></div>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="stylesheet" href="../styles/popup.css" />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+</head>
+<body>
+    <div>
+        <img src="../images/logo1.png" style="margin-top: 60px;" height="60px;">
+        <div id="status"><b>패터닝</b>으로 다크 패턴을 탐지하고 <br/> 현명한 소비 시작해요!</div>
+        <div id="status2"> 쇼핑몰 웹사이트에 접속 후, <br/> 버튼을 누르면 다크패턴이 탐지돼요 🔎</div>
+        <div class="wrapper">
+            <input type="checkbox" id="switch">
+            <label for="switch" class="switch_label">
+                <span class="onf_btn"></span>
+            </label>
         </div>
-        <ul></ul>
-      
-        <script src="../scripts/popup-handler.js" type="module"></script>	
-    </body>
+        <div id="status3"></div>
+    </div>
+    <ul></ul>
+    <script src="../scripts/popup-handler.js" type="module"></script>   
+    <script src="../scripts/content-script.js" type="module"></script>   
+    <script src="../scripts/background.js" type="module"></script>   
+    <script src="../manifest.json" type="module"></script>   
+
+
+</body>
 </html>
