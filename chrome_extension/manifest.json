@@ -3,7 +3,7 @@
     "name": "PatTurning",
     "description": "Extension for Dark Pattern Detection",
     "version": "1.0",
-    "permissions": ["activeTab", "scripting", "storage", "tabs"],
+    "permissions": ["activeTab", "storage", "tabs"],
     "host_permissions": [
       "YOUR_DARK_PATTERN_API",
       "YOUR_PRICE_API",
