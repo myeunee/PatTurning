@@ -48,12 +48,23 @@ with DAG(
     catchup=False                        # 시작 날짜부터 현재까지의 미실행 작업 실행 여부
 ) as dag:
     
-    run_consumer_task = BashOperator(
-        task_id='run_consumer',       # Task 이름
-        bash_command="python3 /home/patturning1/mq_consumer.py &",
+    run_consumer_task1 = BashOperator(
+        task_id='run-consumer-1',       # Task 이름
+        bash_command="python3 /home/patturning1/mq_consumer1.py &",
+        do_xcom_push=False
+    )
+
+    run_consumer_task2 = BashOperator(
+        task_id='run-consumer-2',       # Task 이름
+        bash_command="python3 /home/patturning1/mq_consumer2.py &",
         do_xcom_push=False
     )    
 
+    run_consumer_task3 = BashOperator(
+        task_id='run-consumer-3',       # Task 이름
+        bash_command="python3 /home/patturning1/mq_consumer3.py &",
+        do_xcom_push=False
+    )
 
     @task
     def send_post_request_HOMEPLUS_task(category_id):
@@ -61,7 +72,7 @@ with DAG(
    
     category_ids = list(range(100001, 100078))
 
-    [run_consumer_task, send_post_request_HOMEPLUS_task.expand(category_id=category_ids)]
+    [run_consumer_task1, run_consumer_task2, run_consumer_task3, send_post_request_HOMEPLUS_task.expand(category_id=category_ids)]
 
 
 
