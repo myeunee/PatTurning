@@ -16,6 +16,10 @@ jobs:
       with:
         path: server 
 
+    - name: List files in server directory
+      working-directory: server
+      run: ls -R
+
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
