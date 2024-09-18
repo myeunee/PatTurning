@@ -50,7 +50,8 @@ with DAG(
     
     run_consumer_task = BashOperator(
         task_id='run_consumer',       # Task 이름
-        bash_command="python3 /home/patturning1/mq_consumer.py"
+        bash_command="python3 /home/patturning1/mq_consumer.py &",
+        do_xcom_push=False
     )    
 
 
