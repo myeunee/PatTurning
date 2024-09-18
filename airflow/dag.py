@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.decorators import task
 from dotenv import load_dotenv
 import os
+from airflow.operators.bash import BashOperator
 from airflow.exceptions import AirflowSkipException
 from airflow.operators.python import get_current_context
 from datetime import datetime, timedelta
@@ -46,13 +47,20 @@ with DAG(
     start_date=datetime(2024, 9, 18),    # 시작 날짜
     catchup=False                        # 시작 날짜부터 현재까지의 미실행 작업 실행 여부
 ) as dag:
+    
+    run_consumer_task = BashOperator(
+        task_id='run_consumer',       # Task 이름
+        bash_command="python3 /home/patturning1/mq_consumer.py"
+    )    
+
 
     @task
     def send_post_request_HOMEPLUS_task(category_id):
         return send_post_request(category_id)    
    
     category_ids = list(range(100001, 100078))
-    send_post_request_HOMEPLUS_task.expand(category_id=category_ids)
+
+    run_consumer_task >> send_post_request_HOMEPLUS_task.expand(category_id=category_ids)
 
 
-###############################test24:14###################################
+
