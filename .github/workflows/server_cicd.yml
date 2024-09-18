@@ -29,8 +29,8 @@ jobs:
         build-root-directory: server
 
     - name: Build with Gradle
-      working-directory: /server
-      run: server/gradlew build
+      working-directory: server
+      run: ./gradlew build
 
     - name: Deploy
       if: success()  
