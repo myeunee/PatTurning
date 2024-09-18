@@ -1,34 +1,26 @@
-name: Deploy DAG to Google Compute Engine
+name: CI/CD for Airflow DAGs
 
 on:
   push:
+    paths:
+      - "airflow/dag.py"
     branches:
-      - master
-
-env:
-  GCE_INSTANCE: ${{ secrets.GCE_INSTANCE }}  # GCE 인스턴스 이름
-  GCE_INSTANCE_ZONE: ${{ secrets.GCE_INSTANCE_ZONE }}  # GCE 인스턴스 영역
-  DAG_FILE: dag.py  # DAG 파일 이름
-  GCE_USER: ${{ secrets.GCE_USER }} 
+      - main  # 원하는 브랜치로 설정 가능
 
 jobs:
-  deploy-dag:
-    name: Upload DAG to GCE
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # 2. Set up SSH private key for GCE
-      - name: Setup SSH Key
-        run: sudo apt-get install -y ssh
-
-      # 3. Upload DAG to GCE
-      - name: Upload DAG to GCE via SCP
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ env.GCE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/dag.py ${{ env.GCE_USER }}@${{ secrets.GCE_INSTANCE_EXTERNAL_IP }}:/home/${{ env.GCE_USER }}/airflow/dags/${{ env.DAG_FILE }}
+    - name: Transfer DAG file to GCE
+      env:
+        GCE_IP: ${{ secrets.GCE_IP }}
+        GCE_USER: ${{ secrets.GCE_USER }}
+        GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
+      run: |
+        echo "$GCE_SSH_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        scp -i private_key.pem -o "StrictHostKeyChecking=no" airflow/dag.py ${GCE_USER}@${GCE_IP}:~/airflow/dags/
