@@ -10,7 +10,6 @@ import com.swdc.server.domain.mongoDB.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ProductCollection {
-    @Id
     private String id;
 
     private Integer category_id;
