@@ -21,6 +21,8 @@ jobs:
         GCE_USER: ${{ secrets.GCE_USER }}
         GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
       run: |
-        echo "$GCE_SSH_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
-        scp -i private_key.pem -o "StrictHostKeyChecking=no" airflow/dag.py ${GCE_USER}@${GCE_IP}:~/airflow/dags/
+        mkdir -p ~/.ssh
+        echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" airflow/dag.py ${GCE_USER}@${GCE_IP}:~/airflow/dags
+         
