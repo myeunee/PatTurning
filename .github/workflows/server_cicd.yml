@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17' 
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - name: Set up Gradle
       uses: gradle/gradle-build-action@v3
@@ -28,13 +28,9 @@ jobs:
         gradle-version: '8.8'
         build-root-directory: server
 
-    - name: Run chmod to make gradlew executable
-      working-directory: ./server
-      run: chmod +x server/gradlew
-
     - name: Build with Gradle
       working-directory: ./server
-      run: server/gradlew build -x test
+      run: server/gradlew build
 
     - name: Deploy
       if: success()  
