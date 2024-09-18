@@ -15,6 +15,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install rsync  # rsync 설치 단계 추가
+      run: sudo apt-get update && sudo apt-get install -y rsync
+
     - name: Transfer DAG file to GCE
       env:
         GCE_IP: ${{ secrets.GCE_IP }}
