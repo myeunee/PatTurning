@@ -1,6 +1,6 @@
 HELP.md
 .gradle
-build/
+
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -35,5 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
-
+build/classes/java/main/com/swdc/server/config/WebConfig.class
 src/main/java/com/swdc/server/config/WebConfig.java
