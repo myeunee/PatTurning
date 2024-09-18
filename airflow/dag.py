@@ -53,3 +53,5 @@ with DAG(
    
     category_ids = list(range(100001, 100078))
     send_post_request_HOMEPLUS_task.expand(category_id=category_ids)
+
+##############################################test###########################################
