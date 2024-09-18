@@ -1,0 +1,34 @@
+name: Deploy DAG to Google Compute Engine
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  GCE_INSTANCE: ${{ secrets.GCE_INSTANCE }}  # GCE 인스턴스 이름
+  GCE_INSTANCE_ZONE: ${{ secrets.GCE_INSTANCE_ZONE }}  # GCE 인스턴스 영역
+  DAG_FILE: dag.py  # DAG 파일 이름
+  GCE_USER: ${{ secrets.GCE_USER }} 
+
+jobs:
+  deploy-dag:
+    name: Upload DAG to GCE
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # 2. Set up SSH private key for GCE
+      - name: Setup SSH Key
+        run: sudo apt-get install -y ssh
+
+      # 3. Upload DAG to GCE
+      - name: Upload DAG to GCE via SCP
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ env.GCE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/dag.py ${{ env.GCE_USER }}@${{ secrets.GCE_INSTANCE_EXTERNAL_IP }}:/home/${{ env.GCE_USER }}/airflow/dags/${{ env.DAG_FILE }}
