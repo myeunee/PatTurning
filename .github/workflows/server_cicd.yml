@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        path: server 
+        path: full-repo
 
     - name: Set up JDK
       uses: actions/setup-java@v3
@@ -25,11 +25,12 @@ jobs:
     - name: Set up Gradle
       uses: gradle/gradle-build-action@v3
       with:
-        gradle-version: '8.8'  
+        gradle-version: '8.8'
+        build-root-directory: server
 
     - name: Build with Gradle
-      working-directory: ./server
-      run: server/gradlew build -x test
+      working-directory: server
+      run: ./gradlew build
 
     - name: Deploy
       if: success()  
