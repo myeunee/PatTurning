@@ -27,6 +27,10 @@ jobs:
       with:
         gradle-version: '8.8'  
 
+    - name: Run chmod to make gradlew executable
+      working-directory: ./server
+      run: chmod +x server/gradlew
+
     - name: Build with Gradle
       working-directory: ./server
       run: server/gradlew build -x test
