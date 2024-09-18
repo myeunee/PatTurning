@@ -7,22 +7,11 @@
 package com.swdc.server.service;
 
 import com.swdc.server.domain.mongoDB.Price;
-import com.swdc.server.domain.mongoDB.Product;
-import com.swdc.server.domain.mongoDB.collection.CategoryCollection;
-import com.swdc.server.domain.mongoDB.collection.ProductCollection;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -45,7 +34,7 @@ import java.util.stream.Collectors;
 public class PriceService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
-    private static final String BASE_PATH = "";
+    private static final String BASE_PATH = "/mnt/filestore";
 
     @Autowired
     private MongoTemplate mongoTemplate;
