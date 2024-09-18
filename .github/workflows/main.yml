@@ -27,5 +27,5 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dagsdags
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/dag.py
          
