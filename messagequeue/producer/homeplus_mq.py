@@ -40,6 +40,7 @@ def produce_data(categoryId):
 
     totalPages = response_data['pagination']['totalPage']
     category_name = response_data['data']['dataList'][0]['lcateNm']
+    category_name = category_name.replace('/', '_')
     logging.info(f"category_name: {category_name}; Total Page: {totalPages}")
 
     for page in range(1, totalPages + 1):
@@ -103,7 +104,7 @@ app = Flask(__name__)
 
 # HTTP 엔드포인트 정의
 @app.route("/", methods=["POST"])
-def trigger_rabbitmq_consumer():
+def trigger_rabbitmq_producer():
     # 요청에서 JSON 데이터를 추출
     data = request.get_json()
     # category_id를 request에서 추출, 없으면 error return
