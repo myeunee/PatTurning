@@ -16,13 +16,6 @@ jobs:
       with:
         path: server 
 
-    - name: Print working directory
-      run: pwd
-
-    - name: Clear Gradle cache
-      run: |
-        rm -rf ~/.gradle/caches
-
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
