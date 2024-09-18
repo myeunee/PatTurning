@@ -28,7 +28,7 @@ jobs:
         gradle-version: '8.0'  
 
     - name: Build with Gradle
-      run: ./server/gradlew build -x test
+      run: server/gradlew build -x test
 
     - name: Deploy
       if: success()  
