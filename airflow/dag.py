@@ -61,7 +61,7 @@ with DAG(
    
     category_ids = list(range(100001, 100078))
 
-    run_consumer_task >> send_post_request_HOMEPLUS_task.expand(category_id=category_ids)
+    [run_consumer_task, send_post_request_HOMEPLUS_task.expand(category_id=category_ids)]
 
 
 
