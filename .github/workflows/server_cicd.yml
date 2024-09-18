@@ -29,7 +29,7 @@ jobs:
 
     - name: Build with Gradle
       working-directory: /home/runner/work/Dark-Pattern-Detection-SWDeveloperContest/Dark-Pattern-Detection-SWDeveloperContest/server
-      run: gradlew build -x test
+      run: /home/runner/work/Dark-Pattern-Detection-SWDeveloperContest/Dark-Pattern-Detection-SWDeveloperContest/server/gradlew build -x test
 
     - name: Deploy
       if: success()  
