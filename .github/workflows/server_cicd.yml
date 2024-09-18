@@ -29,7 +29,7 @@ jobs:
         build-root-directory: server
 
     - name: Build with Gradle
-      working-directory: ./server
+      working-directory: /server
       run: server/gradlew build
 
     - name: Deploy
