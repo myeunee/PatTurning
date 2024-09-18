@@ -28,9 +28,9 @@ jobs:
         gradle-version: '8.8'
 
     - name: Build with Gradle
-      working-directory: /home/runner/work/Dark-Pattern-Detection-SWDeveloperContest/Dark-Pattern-Detection-SWDeveloperContest/server
-      run: /home/runner/work/Dark-Pattern-Detection-SWDeveloperContest/Dark-Pattern-Detection-SWDeveloperContest/server/gradlew build -x test
-
+      working-directory: ./server
+      run: server/gradlew build -x test
+      
     - name: Deploy
       if: success()  
       run: echo "Deploy your application here"
