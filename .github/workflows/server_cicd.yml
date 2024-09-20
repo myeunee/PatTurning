@@ -38,12 +38,13 @@ jobs:
         host: ${{ secrets.GCP_SERVER_VM_HOST }} 
         username: ${{ secrets.GCP_SERVER_VM_USER }} 
         key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+        source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
+        target: /home/patturning1/deployment/
         port: 22
         script: |
           sudo docker stop swdc-container || true
           sudo docker rm swdc-container || true
-          rm -rf /home/patturning1/deployment/swdc-0.0.1-SNAPSHOT.jar
-          scp -r server/build/libs/swdc-0.0.1-SNAPSHOT.jar patturning1@${{ secrets.GCP_SERVER_VM_HOST }}:/home/patturning1/deployment/
+
           cd /home/patturning1/deployment  
           sudo docker build -t swdc-app .
           sudo docker run -d -p 8080:8080 --name swdc-container swdc-app
