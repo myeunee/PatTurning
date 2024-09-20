@@ -3,35 +3,62 @@ name: server CI/CD Pipeline
 
 on:
   push:
+    paths:
+      - "server/**"
     branches:
-      - main  
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        path: full-repo
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17' 
-        distribution: 'temurin'
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Set up Gradle
-      uses: gradle/gradle-build-action@v3
-      with:
-        gradle-version: '8.8'
-        build-root-directory: server
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: '8.8'
 
-    - name: Build with Gradle
-      working-directory: server
-      run: ./gradlew build -x test
+      - name: Build with Gradle
+        run: |
+          cd server
+          ./gradlew build -x test
 
-    - name: Deploy
-      if: success()  
-      run: echo "Deploy your application here"
+      - name: Deliver jar File
+        if: success()
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.GCP_SERVER_VM_HOST }}
+          username: ${{ secrets.GCP_SERVER_VM_USER }}
+          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}
+          port: 22
+          source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
+          target: /home/patturning1/deployment/
+
+      - name: Deploy to GCP VM
+        if: success()
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          debug: true
+          host: ${{ secrets.GCP_SERVER_VM_HOST }}
+          username: ${{ secrets.GCP_SERVER_VM_USER }}
+          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            sudo docker stop swdc-container || true
+            sudo docker rm swdc-container || true
+            
+            cd /home/patturning1/deployment  
+            sudo docker build -t swdc-app .
+            sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt swdc-app
+
+      
+      
