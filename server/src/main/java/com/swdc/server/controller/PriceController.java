@@ -36,9 +36,10 @@ public class PriceController {
     public Price getPriceInfo(@PathVariable String platform, HttpServletRequest request, @PathVariable String product_id) {
         String restOfPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-        String category_name = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, restOfPath);
+        String category_name_with_separator = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, restOfPath);
 
-        category_name = UriUtils.decode(category_name, StandardCharsets.UTF_8);
+        category_name_with_separator = UriUtils.decode(category_name_with_separator, StandardCharsets.UTF_8);
+        String category_name = category_name_with_separator.replace("/", "_");
 
         return priceService.getProductDetails(platform, category_name, product_id);
     }
