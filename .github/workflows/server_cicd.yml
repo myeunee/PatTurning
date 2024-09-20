@@ -29,6 +29,18 @@ jobs:
       run: |
         cd server
         ./gradlew build -x test
+        
+    - name: Deliver jar File
+      if: success()
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.GCP_SERVER_VM_HOST }} 
+        username: ${{ secrets.GCP_SERVER_VM_USER }} 
+        key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+        port: 22
+        source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
+        target: /home/patturning1/deployment/
+        rm: true
       
     - name: Deploy to GCP VM
       if: success()
@@ -38,8 +50,6 @@ jobs:
         host: ${{ secrets.GCP_SERVER_VM_HOST }} 
         username: ${{ secrets.GCP_SERVER_VM_USER }} 
         key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
-        source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
-        target: /home/patturning1/deployment/
         port: 22
         script: |
           sudo docker stop swdc-container || true
