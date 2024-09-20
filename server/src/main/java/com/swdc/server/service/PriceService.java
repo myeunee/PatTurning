@@ -41,7 +41,7 @@ public class PriceService {
 
     /**
      *
-     *  file system에서 "fileSystemPath/platform/category_name/product_id.txt"에 해당하는 product의 가격 정보를 반환
+     *  file system에서 "{fileSystemPath}/platform/category_name/product_id.txt"에 해당하는 product의 가격 정보를 반환
      *
      */
     public Price getProductDetails(String platform, String category_name, String product_id) {
