@@ -30,6 +30,18 @@ jobs:
         cd server
         ./gradlew build -x test
       
-    - name: Deploy
-      if: success()  
-      run: echo "Deploy your application here"
+    - name: Deploy to GCP VM
+      if: success()
+      uses: appleboy/ssh-action@v0.1.3
+      with:
+        host: ${{ secrets.GCP_SERVER_VM_HOST }} 
+        username: ${{ secrets.GCP_SERVER_VM_USER }} 
+        key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+        port: 22
+        script: |
+          cd /home/patturning1/deployment
+          pkill -f swdc-0.0.1-SNAPSHOT.jar
+          rm -rf /home/patturning1/deployment/* 
+          scp -r ./server/build/libs/* patturning1@34.47.71.246:/home/patturning1/deployment/ 
+          nohup java -jar swdc-0.0.1-SNAPSHOT.jar &
+
