@@ -56,9 +56,9 @@ public class PriceService {
                     .map(parts -> Map.of(parts[0], Integer.parseInt(parts[1]))) // 날짜와 가격을 Map으로 변환
                     .collect(Collectors.toList()); // 모든 맵을 리스트로 수집
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + productPath);
+            System.err.println("File not found: " + productPath + ". Error: " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error reading file: " + productPath);
+            System.err.println("Error reading file: " + productPath + ". Error: " + e.getMessage());
         }
 
         Price priceInfo = Price.builder()
