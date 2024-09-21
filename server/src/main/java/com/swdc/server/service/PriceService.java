@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class PriceService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
-    private static final String BASE_PATH = "/mnt/patturning";
+    private static final String BASE_PATH = "/Users/sangyeong_park/CE/contest/file_system";
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -46,7 +46,7 @@ public class PriceService {
      */
     public Price getProductDetails(String platform, String category_name, String product_id) {
         Path fileSystemPath = Paths.get(BASE_PATH);
-        Path productPath = fileSystemPath.resolve(platform).resolve(category_name).resolve(product_id + ".txt");
+        Path productPath = fileSystemPath.resolve(platform).resolve(category_name).resolve(product_id);
 
         List<Map<String, Integer>> prices = new ArrayList<>();
 
