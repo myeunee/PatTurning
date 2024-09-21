@@ -3,6 +3,8 @@ name: server CI/CD Pipeline
 
 on:
   push:
+    paths: 
+      - "server/**"
     branches:
       - main  
 
