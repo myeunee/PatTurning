@@ -37,3 +37,4 @@ out/
 .vscode/
 build/classes/java/main/com/swdc/server/config/WebConfig.class
 src/main/java/com/swdc/server/config/WebConfig.java
+build
