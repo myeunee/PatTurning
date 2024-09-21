@@ -46,7 +46,7 @@ public class PriceService {
      */
     public Price getProductDetails(String platform, String category_name, String product_id) {
         Path fileSystemPath = Paths.get(BASE_PATH);
-        Path productPath = fileSystemPath.resolve(platform).resolve(category_name).resolve(product_id);
+        Path productPath = fileSystemPath.resolve(platform).resolve(category_name).resolve(product_id + ".txt");
 
         List<Map<String, Integer>> prices = new ArrayList<>();
 
