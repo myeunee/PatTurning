@@ -51,8 +51,12 @@ def callback(ch, method, properties, body):
     cnt += 1
     reset_timer()
     # formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-    message_str = body.decode('utf-8')
-    message_json = json.loads(message_str)
+    try:
+        message_str = body.decode('utf-8')
+        message_json = json.loads(message_str)
+    except json.JSONDecodeError as e:
+        print(f"Failed to decode JSON: {e}\n Received message: {message_str}"}
+        pass
     category_name = message_json['category_name']
     product_id = message_json['product_id']
     price = message_json['price']
