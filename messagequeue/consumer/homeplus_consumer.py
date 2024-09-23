@@ -63,7 +63,7 @@ def callback(ch, method, properties, body):
     # else:
         # print(f"Directory ./homeplus/{category_name}/ already exists")
     with open(f'/mnt/patturning/HomePlus/{category_name}/{product_id}.txt', 'a') as f:
-        f.write(f"{current_date},{now_hour},{price}\n")
+        f.write(f"{current_date},{now_hour}:00,{price}\n")
     if cnt % 10000 == 0:
         end = time.time()
         time_spent = datetime.timedelta(seconds=(end-start))
