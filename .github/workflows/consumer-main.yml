@@ -1,0 +1,36 @@
+name: CI/CD for MQ consumers
+
+on:
+  push:
+    paths:
+      - "messagequeue/consumer/homeplus_consumer.py"
+      - "messagequeue/consumer/oasis_consumer.py"
+      - "posty/consumer/posty_consumer.py"
+    branches:
+      - main  # 원하는 브랜치로 설정 가능
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install rsync  # rsync 설치 단계 추가
+      run: sudo apt-get update && sudo apt-get install -y rsync
+
+    - name: Transfer DAG file to GCE
+      env:
+        GCE_IP: ${{ secrets.GCE_IP }}
+        GCE_USER: ${{ secrets.GCE_USER }}
+        GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/homeplus_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/homeplus_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/oasis_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/oasis_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/posty_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/posty_consumer.py
+
+         
