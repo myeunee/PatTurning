@@ -40,6 +40,8 @@ def reset_timer():
 
 start = time.time()
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+KST = timezone(timedelta(hours=9))
+now_hour = datetime.datetime.now(KST)[11:13]
 
 timer = None
 # 콜백 함수 정의 (메시지 수신 시 호출됨)
@@ -48,7 +50,6 @@ def callback(ch, method, properties, body):
     global start
     cnt += 1
     reset_timer()
-    now_hour = datetime.datetime.now().hour
     # formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
     message_str = body.decode('utf-8')
     message_json = json.loads(message_str)
