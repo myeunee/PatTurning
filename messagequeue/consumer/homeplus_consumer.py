@@ -41,7 +41,7 @@ def reset_timer():
 start = time.time()
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 KST = datetime.timezone(datetime.timedelta(hours=9))
-now_hour = datetime.datetime.now(KST)[11:13]
+now_hour = str(datetime.datetime.now(KST))[11:13]
 
 timer = None
 # 콜백 함수 정의 (메시지 수신 시 호출됨)
