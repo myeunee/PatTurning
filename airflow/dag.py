@@ -46,7 +46,8 @@ with DAG(
     'HomePlus_Crawling_DAG',             # DAG의 이름
     default_args=default_args,           # 기본 인자 설정
     description='HomePlus Crawling',     # DAG 설명
-    schedule_interval='0 9,16,22 * * *',       # 실행 주기 (매일 09:00, 16:00, 22:00 정각)
+    #schedule_interval='0 9,16,22 * * *',       # 실행 주기 (매일 09:00, 16:00, 22:00 정각)
+    schedule_interval='0 * * * *',
     start_date=datetime(2024, 9, 20),    # 시작 날짜
     catchup=False                        # 시작 날짜부터 현재까지의 미실행 작업 실행 여부
 ) as dag:
