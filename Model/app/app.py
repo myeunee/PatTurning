@@ -65,7 +65,7 @@ def predict(model, data, padded_x):
 
     return result_list
 
-@app.route('/predict', methods=['POST'])
+@app.route('/dark-patterns', methods=['POST'])
 def predict_route():
     try:
         
@@ -103,7 +103,9 @@ def predict_route():
         # 에러 메시지와 함께 500 상태 코드를 반환
         return jsonify({"error": str(e)}), 500
 
-
+@app.route('/')
+def root():
+    return "OK", 200
 
 @app.route('/test', methods=['POST'])
 def test_route():
@@ -112,6 +114,18 @@ def test_route():
     res = make_response(result)
     return res
 
+@app.route('/data', methods=['GET'])
+def get_data():
+    # 쿼리 파라미터로 값을 전달 받을 수 있음
+    param = request.args.get('param', 'default_value')
+    
+    # 예시 JSON 데이터 반환
+    response = {
+        'message': 'Hello, World!',
+        'param': param
+    }
+    
+    return jsonify(response)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
