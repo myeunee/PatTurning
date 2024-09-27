@@ -8,8 +8,6 @@ from airflow.operators.python import get_current_context
 from datetime import datetime, timedelta
 import json, requests
 
-from Oasis_category_info import *
-
 
 # 함수 정의: HTTP POST 요청
 def send_post_request(categoryId):
