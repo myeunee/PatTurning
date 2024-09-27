@@ -82,7 +82,7 @@ with DAG(
 
     # 모든 병렬 태스크가 완료된 후의 마무리 태스크
     final_task = EmptyOperator(
-        task_id='empty task',
+        task_id='empty-task',
         dag=dag
     )
 
