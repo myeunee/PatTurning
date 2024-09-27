@@ -67,7 +67,5 @@ with DAG(
         bash_command="python3 /home/patturning1/oasis_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
     ).expand(params=generate_queue_values())
 
-    [
-        run_consumer_task,
-        send_post_request_OASIS_task.expand(),
-    ]
+    send_post_request_OASIS_task()
+    run_consumer_task
