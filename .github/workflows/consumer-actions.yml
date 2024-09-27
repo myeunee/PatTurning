@@ -3,9 +3,9 @@ name: CI/CD for MQ consumers
 on:
   push:
     paths:
-      - "messagequeue/consumer/homeplus_consumer.py"
-      - "messagequeue/consumer/oasis_consumer.py"
-      - "posty/consumer/posty_consumer.py"
+      - "messagequeue/consumer/HomePlus_consumer.py"
+      - "messagequeue/consumer/Oasis_consumer.py"
+      - "posty/consumer/Posty_consumer.py"
     branches:
       - main  # 원하는 브랜치로 설정 가능
 
@@ -29,8 +29,8 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/homeplus_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/homeplus_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/oasis_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/oasis_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/posty_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/posty_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/HomePlus_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/HomePlus_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Oasis_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/Oasis_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Posty_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/Posty_consumer.py
 
          
