@@ -6,9 +6,9 @@ from airflow.operators.bash import BashOperator
 from airflow.exceptions import AirflowSkipException
 from airflow.operators.python import get_current_context
 from airflow.operators.email import EmailOperator
+from airflow.operators.empty import EmptyOperator
 from datetime import datetime, timedelta
 import json, requests
-
 
 
 # 함수 정의: HTTP POST 요청
@@ -79,6 +79,12 @@ with DAG(
     ).expand(params=generate_queue_values())
 
     category_ids = list(range(100001, 100078))
+
+    # 모든 병렬 태스크가 완료된 후의 마무리 태스크
+    final_task = EmptyOperator(
+        task_id='empty task',
+        dag=dag
+    )
 
     # 실패 시 이메일 전송
     send_failure_email = EmailOperator(
