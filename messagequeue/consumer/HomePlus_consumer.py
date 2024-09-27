@@ -30,7 +30,7 @@ while True:
 
         connection = pika.BlockingConnection(params)
         channel = connection.channel()
-        channel.basic_qos(prefetch_count=10)
+        # channel.basic_qos(prefetch_count=10)
         break
     except pika.exceptions.AMQPConnectionError as e:
         print(f"Connection error: {e}, retrying in 5 seconds...")
