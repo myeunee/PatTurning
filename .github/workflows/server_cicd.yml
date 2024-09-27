@@ -58,4 +58,4 @@ jobs:
             
             cd /home/patturning1/deployment  
             sudo docker build -t swdc-app .
-            sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt -u patturning1 swdc-app
+            sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt -u swdc-app
