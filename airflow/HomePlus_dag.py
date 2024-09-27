@@ -100,7 +100,7 @@ with DAG(
     # 이메일 전송
     send_summary_email = EmailOperator(
         task_id="send_summary_email",
-        to="patturning@gmail.com",
+        to="patturning1@gmail.com",
         subject="{{ task_instance.xcom_pull(task_ids='collect_task_results', key='email_subject') }}",
         html_content="{{ task_instance.xcom_pull(task_ids='collect_task_results', key='email_body') }}",
         trigger_rule="all_done",
