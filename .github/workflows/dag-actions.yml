@@ -3,7 +3,9 @@ name: CI/CD for Airflow DAGs
 on:
   push:
     paths:
-      - "airflow/dag.py"
+      - "airflow/HomePlus_dag.py"
+      - "airflow/Oasis_dag.py"
+      - "airflow/Posty_dag.py"
     branches:
       - main  # 원하는 브랜치로 설정 가능
 
@@ -27,5 +29,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/HomePlus_dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/Oasis_dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Posty_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/Posty_dag.py
          
