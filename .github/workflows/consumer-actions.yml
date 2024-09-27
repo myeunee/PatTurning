@@ -5,7 +5,7 @@ on:
     paths:
       - "messagequeue/consumer/HomePlus_consumer.py"
       - "messagequeue/consumer/Oasis_consumer.py"
-      - "posty/consumer/Posty_consumer.py"
+      - "messagequeue/consumer/Posty_consumer.py"
     branches:
       - main  # 원하는 브랜치로 설정 가능
 
