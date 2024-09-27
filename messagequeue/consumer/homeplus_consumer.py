@@ -6,6 +6,8 @@ cnt = 0
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
+
+
 load_dotenv()
 username = os.getenv('RABBITMQ_USERNAME')
 password = os.getenv('RABBITMQ_PASSWORD')
@@ -14,15 +16,21 @@ port = os.getenv('RABBITMQ_PORT')
 vhost = os.getenv('RABBITMQ_VHOST')
 queue = sys.argv[1]
 
-# 사용자 이름과 비밀번호 설정
-credentials = pika.PlainCredentials(username, password)
+while True:
+    try:
+        # 사용자 이름과 비밀번호 설정
+        credentials = pika.PlainCredentials(username, password)
 
-# RabbitMQ 연결 설정
-connection = pika.BlockingConnection(pika.ConnectionParameters(hostname, port, vhost, credentials))
-channel = connection.channel()
-channel.basic_qos(prefetch_count=10)
+        # RabbitMQ 연결 설정
+        connection = pika.BlockingConnection(pika.ConnectionParameters(hostname, port, vhost, credentials))
+        channel = connection.channel()
+        channel.basic_qos(prefetch_count=30)
+        break
+    except pika.exceptions.AMQPConnectionError as e:
+        print(f"Connection error: {e}, retrying in 5 seconds...")
+        time.sleep(5)
 
-# 타임아웃 시간 설정 (단위: 초, 5분 = 300초)
+# 타임아웃 시간 설정 
 TIMEOUT_SECONDS = 180
 
 def timeout_handler():
