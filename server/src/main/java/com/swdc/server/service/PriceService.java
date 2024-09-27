@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class PriceService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
-    private static final String BASE_PATH = "/mnt/filestore";
+    private static final String BASE_PATH = "/mnt/patturning";
 
     @Autowired
     private MongoTemplate mongoTemplate;
