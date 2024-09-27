@@ -81,7 +81,7 @@ with DAG(
     category_ids = list(range(100001, 100078))
 
     # 모든 병렬 태스크가 완료된 후의 마무리 태스크
-    final_task = EmptyOperator(
+    empty_task = EmptyOperator(
         task_id='empty-task',
         dag=dag
     )
@@ -114,4 +114,4 @@ with DAG(
     [
         run_consumer_task,
         send_post_request_HOMEPLUS_task.expand(category_id=category_ids),
-    ] >> [send_failure_email, send_success_email]
+    ] >> empty_task >> [send_failure_email, send_success_email]
