@@ -5,8 +5,10 @@ import os
 from airflow.operators.bash import BashOperator
 from airflow.exceptions import AirflowSkipException
 from airflow.operators.python import get_current_context
+from airflow.operators.email import EmailOperator
 from datetime import datetime, timedelta
 import json, requests
+
 
 
 # 함수 정의: HTTP POST 요청
@@ -30,16 +32,17 @@ def send_post_request(categoryId):
     else:
         print(f"Failed: {response.status_code}, {response.text}")
         response.raise_for_status()
+        
 
 
 # DAG의 기본 설정
 default_args = {
     "owner": "khuda",  # DAG 소유자
     "depends_on_past": False,  # 이전 DAG 실패 여부에 의존하지 않음
-    #    'email': ['dbgpwl34@gmail.com'],    # 수신자 이메일
+    # 'email': ['dbgpwl34@gmail.com'],    # 수신자 이메일
     #    "email_on_success": True,           # 성공 시 이메일 전송
-    #    'email_on_failure': True,           # 실패 시 이메일 전송
-    #    'email_on_retry': True,             # 재시도 시 이메일 전송
+    # 'email_on_failure': True,           # 실패 시 이메일 전송
+    # 'email_on_retry': True,             # 재시도 시 이메일 전송
     "retries": 1,  # 실패 시 재시도 횟수
     "retry_delay": timedelta(minutes=5),  # 재시도 간격
 }
@@ -55,23 +58,6 @@ with DAG(
     catchup=False,  # 시작 날짜부터 현재까지의 미실행 작업 실행 여부
 ) as dag:
 
-    # run_consumer_task1 = BashOperator(
-    #     task_id='run-consumer-1',       # Task 이름
-    #     bash_command="python3 /home/patturning1/mq_consumer1.py &",
-    #     do_xcom_push=False
-    # )
-
-    # run_consumer_task2 = BashOperator(
-    #     task_id='run-consumer-2',       # Task 이름
-    #     bash_command="python3 /home/patturning1/mq_consumer2.py &",
-    #     do_xcom_push=False
-    # )
-
-    # run_consumer_task3 = BashOperator(
-    #     task_id='run-consumer-3',       # Task 이름
-    #     bash_command="python3 /home/patturning1/mq_consumer3.py &",
-    #     do_xcom_push=False
-    # )
 
     @task
     def send_post_request_HOMEPLUS_task(category_id):
@@ -89,12 +75,37 @@ with DAG(
     # BashOperator에서 expand로 받은 값을 사용
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command="python3 /home/patturning1/homeplus_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
+        bash_command="python3 /home/patturning1/HomePlus_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
     ).expand(params=generate_queue_values())
 
     category_ids = list(range(100001, 100078))
 
+    # 실패 시 이메일 전송
+    send_failure_email = EmailOperator(
+        task_id='send_failure_email',
+        to='patturning@gmail.com',
+        subject='Task Failure Alert',
+        html_content="""
+        <h3>One or more tasks have failed!</h3>
+        <p>Please check the Airflow logs for more details.</p>
+        """,
+        trigger_rule='one_failed',  # 이전 태스크 중 하나라도 실패하면 이메일 전송
+        dag=dag
+    )
+
+    # 성공 여부와 상관없이 모두 완료된 후의 마지막 성공 태스크
+    send_success_email = EmailOperator(
+        task_id='send_success_email',
+        to='patturning@gmail.com',
+        subject='Task Success Alert',
+        html_content="""
+        <h3>All dynamic tasks have completed successfully.</h3>
+        """,
+        trigger_rule='all_success',  # 모든 태스크가 성공해야만 실행
+        dag=dag
+    )
+
     [
         run_consumer_task,
         send_post_request_HOMEPLUS_task.expand(category_id=category_ids),
-    ]
+    ] >> [send_failure_email, send_success_email]
