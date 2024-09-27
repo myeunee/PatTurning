@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-### dummy
-=======
 from airflow import DAG
 from airflow.decorators import task
 from dotenv import load_dotenv
@@ -76,4 +73,3 @@ with DAG(
         run_consumer_task,
         send_post_request_OASIS_task.expand(),
     ]
->>>>>>> Stashed changes
