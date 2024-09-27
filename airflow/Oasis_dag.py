@@ -66,7 +66,7 @@ with DAG(
     # BashOperator에서 expand로 받은 값을 사용
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command="python3 /home/patturning1/homeplus_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
+        bash_command="python3 /home/patturning1/oasis_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
     ).expand(params=generate_queue_values())
 
     [
