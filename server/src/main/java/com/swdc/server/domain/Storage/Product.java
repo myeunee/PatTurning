@@ -4,7 +4,7 @@
  *
  */
 
-package com.swdc.server.domain.mongoDB;
+package com.swdc.server.domain.Storage;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,7 @@
 
 package com.swdc.server.controller;
 
-import com.swdc.server.domain.mongoDB.Price;
+import com.swdc.server.domain.Storage.Price;
 import com.swdc.server.service.PriceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 public class PriceController {
 
     private final PriceService priceService;
-
 
     /**
      *
