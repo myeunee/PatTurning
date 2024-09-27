@@ -10,7 +10,7 @@ import json, requests
 
 
 # 함수 정의: HTTP POST 요청
-def send_post_request(categoryId):
+def send_post_request():
     load_dotenv()
     url = os.getenv("OASIS_SERVICE_URL")
 
