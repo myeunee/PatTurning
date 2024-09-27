@@ -3,6 +3,7 @@ from airflow.decorators import task
 from dotenv import load_dotenv
 import os
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator, get_current_context
 from airflow.exceptions import AirflowSkipException
 from airflow.operators.python import get_current_context
 from airflow.operators.email import EmailOperator
@@ -80,39 +81,53 @@ with DAG(
 
     category_ids = list(range(100001, 100078))
 
-    # 모든 병렬 태스크가 완료된 후의 마무리 태스크
-    empty_task = EmptyOperator(
-        task_id='empty-task',
-        trigger_rule="all_done",
-        dag=dag
+    # 모든 태스크의 실행 상태를 집계하여 이메일을 보낼 내용 생성
+    def collect_task_results(**context):
+        # 모든 태스크의 실행 상태 수집
+        dag_run = context['dag_run']
+        task_states = {}
+        for task_instance in dag_run.get_task_instances():
+            task_states[task_instance.task_id] = task_instance.current_state()
+
+        # 이메일 내용을 상태에 따라 설정
+        if any(state in ['failed', 'skipped'] for state in task_states.values()):
+            email_subject = "Task Failure Alert"
+            email_body = f"""
+            <h3>One or more tasks have failed or been skipped!</h3>
+            <p>Task States:</p>
+            <pre>{task_states}</pre>
+            """
+        else:
+            email_subject = "Task Success Alert"
+            email_body = f"""
+            <h3>All tasks have completed successfully!</h3>
+            <p>Task States:</p>
+            <pre>{task_states}</pre>
+            """
+    
+            # 결과를 XCom에 저장
+            context['ti'].xcom_push(key='email_subject', value=email_subject)
+            context['ti'].xcom_push(key='email_body', value=email_body)
+
+    # 파이썬 함수를 실행하는 태스크 정의
+    collect_task_results_task = PythonOperator(
+        task_id="collect_task_results",
+        python_callable=collect_task_results,
+        provide_context=True,
+        trigger_rule="all_done",  # 모든 태스크가 완료된 후 실행
     )
 
-    # 실패 시 이메일 전송
-    send_failure_email = EmailOperator(
-        task_id='send_failure_email',
-        to='patturning@gmail.com',
-        subject='Task Failure Alert',
-        html_content="""
-        <h3>One or more tasks have failed!</h3>
-        <p>Please check the Airflow logs for more details.</p>
-        """,
-        trigger_rule='one_failed',  # 이전 태스크 중 하나라도 실패하면 이메일 전송
-        dag=dag
-    )
 
-    # 성공 여부와 상관없이 모두 완료된 후의 마지막 성공 태스크
-    send_success_email = EmailOperator(
-        task_id='send_success_email',
-        to='patturning@gmail.com',
-        subject='Task Success Alert',
-        html_content="""
-        <h3>All dynamic tasks have completed successfully.</h3>
-        """,
-        trigger_rule='all_success',  # 모든 태스크가 성공해야만 실행
-        dag=dag
+    # 상태에 따라 이메일 전송
+    send_summary_email = EmailOperator(
+        task_id="send_summary_email",
+        to="patturning@gmail.com",
+        subject="{{ task_instance.xcom_pull(task_ids='collect_task_results', key='email_subject') }}",
+        html_content="{{ task_instance.xcom_pull(task_ids='collect_task_results', key='email_body') }}",
+        trigger_rule="all_done",  # 모든 태스크가 완료된 후 실행
     )
 
     [
         run_consumer_task,
         send_post_request_HOMEPLUS_task.expand(category_id=category_ids),
-    ] >> empty_task >> [send_failure_email, send_success_email]
+    ] >> collect_task_results_task >> send_summary_email
