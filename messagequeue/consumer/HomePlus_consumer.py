@@ -89,3 +89,9 @@ channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 logging.info('Waiting for messages. To exit press CTRL+C')
 reset_timer()
 channel.start_consuming()
+<<<<<<< HEAD:messagequeue/consumer/homeplus_consumer.py
+=======
+
+##
+##push test
+>>>>>>> 2b60becefbf24813d0919321adb62cc9c2607c4a:messagequeue/consumer/HomePlus_consumer.py
