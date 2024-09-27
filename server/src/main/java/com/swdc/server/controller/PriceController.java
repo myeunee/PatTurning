@@ -4,7 +4,7 @@
 
 package com.swdc.server.controller;
 
-import com.swdc.server.domain.Storage.Price;
+import com.swdc.server.domain.storage.Price;
 import com.swdc.server.service.PriceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

@@ -6,7 +6,7 @@
 
 package com.swdc.server.service;
 
-import com.swdc.server.domain.Storage.Price;
+import com.swdc.server.domain.storage.Price;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,12 @@ public class PriceService {
                         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
                             List<Map<String, Integer>> prices = bufferedReader.lines()
                                     .map(line -> line.split(","))
-                                    .map(parts -> Map.of(parts[0], Integer.parseInt(parts[1])))
+                                    .map(parts -> {
+                                        // 날짜와 시간 부분을 키로, 가격을 값으로 맵 구성
+                                        String dateTime = parts[0] + "," + parts[1]; // "2024-09-20,09:00" 형태
+                                        int price = Integer.parseInt(parts[2]); // "8000"을 정수로 변환
+                                        return Map.of(dateTime, price); // Map<String, Integer> 생성
+                                    })
                                     .collect(Collectors.toList());
                             allPrices.addAll(prices);
                         } catch (IOException e) {

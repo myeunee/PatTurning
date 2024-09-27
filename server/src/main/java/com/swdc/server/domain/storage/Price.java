@@ -4,7 +4,7 @@
  *
  */
 
-package com.swdc.server.domain.Storage;
+package com.swdc.server.domain.storage;
 
 import lombok.Builder;
 import lombok.Getter;
