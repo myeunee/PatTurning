@@ -18,11 +18,17 @@ queue = sys.argv[1]
 
 while True:
     try:
-        # 사용자 이름과 비밀번호 설정
-        credentials = pika.PlainCredentials(username, password)
+        
+        params = pika.ConnectionParameters(
+            hostname,
+            port,
+            vhost,
+            pika.PlainCredentials(username, password),
+            heartbeat=600,  # Heartbeat를 10분으로 설정
+            blocked_connection_timeout=300  # 5분 동안 연결 유지
+        )
 
-        # RabbitMQ 연결 설정
-        connection = pika.BlockingConnection(pika.ConnectionParameters(hostname, port, vhost, credentials))
+        connection = pika.BlockingConnection(params)
         channel = connection.channel()
         channel.basic_qos(prefetch_count=30)
         break

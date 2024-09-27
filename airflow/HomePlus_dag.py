@@ -83,6 +83,7 @@ with DAG(
     # 모든 병렬 태스크가 완료된 후의 마무리 태스크
     empty_task = EmptyOperator(
         task_id='empty-task',
+        trigger_rule="all_done",
         dag=dag
     )
 
