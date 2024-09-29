@@ -44,5 +44,10 @@
 | :-: | :-: | :-: | :-: | :-: |
 | <img src='https://avatars.githubusercontent.com/u/60197194?v=4' height=130 width=130></img> | <img src='https://avatars.githubusercontent.com/u/70475010?v=4' height=130 width=130></img> | <img src='https://avatars.githubusercontent.com/u/107484383?v=4' height=130 width=130></img> | <img src='https://avatars.githubusercontent.com/u/90139122?v=4' height=130 width=130></img> | <img src='https://avatars.githubusercontent.com/u/111333350?v=4' height=130 width=130></img> |
 | <a href="https://github.com/g-hyeong" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> | <a href="https://github.com/eulneul" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> | <a href="https://github.com/Imsyp" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> | <a href="https://github.com/HyejiYu" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> | <a href="https://github.com/myeunee" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> |
-| Airflow On K8S 구축 | 모델 구축 및 서빙 | BackEnd | DB 구축 | FrontEnd |
+| Airflow On K8S 구축 | 모델 구축 및 서빙 | BackEnd | DB 구축 | Chrome Extension |
 <br>
+
+
+## ↗️ Extension 설치
+![image](https://github.com/user-attachments/assets/7864f451-ca4d-46dd-a834-453ade33cd46)
+[웹스토어 이동하기](https://chromewebstore.google.com/detail/patturning/nlldmjdghbedjmnbkpgjnnanpecmmpad)
