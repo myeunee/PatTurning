@@ -48,6 +48,6 @@
 <br>
 
 
-## ↗️ Extension 설치
+## ↗️ Release
 ![image](https://github.com/user-attachments/assets/7864f451-ca4d-46dd-a834-453ade33cd46)
 [웹스토어 이동하기](https://chromewebstore.google.com/detail/patturning/nlldmjdghbedjmnbkpgjnnanpecmmpad)
