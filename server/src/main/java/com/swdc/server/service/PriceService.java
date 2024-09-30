@@ -51,15 +51,31 @@ public class PriceService {
         List<Map<String, Integer>> prices = new ArrayList<>();
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(productPath)) {
-            prices = bufferedReader.lines()
-                    .map(line -> line.split(",")) // 각 줄을 쉼표로 분리
-                    .map(parts -> {
-                        // 날짜와 시간 부분을 키로, 가격을 값으로 맵 구성
-                        String dateTime = parts[0] + "," + parts[1]; // "2024-09-20,09:00" 형태
-                        int price = Integer.parseInt(parts[2]); // "8000"을 정수로 변환
-                        return Map.of(dateTime, price); // Map<String, Integer> 생성
-                    })
-                    .collect(Collectors.toList()); // 모든 맵을 리스트로 수집
+            String previousLine = null;
+            String currentLine;
+
+            while ((currentLine = bufferedReader.readLine()) != null) {
+                String[] parts = currentLine.split(",");
+                String dateTime = parts[0] + "," + parts[1];
+                int currentPrice = Integer.parseInt(parts[2]);
+
+                // 이전 라인의 가격 정보와 비교
+                if (previousLine != null) {
+                    String[] prevParts = previousLine.split(",");
+                    int previousPrice = Integer.parseInt(prevParts[2]);
+
+                    // 가격이 달라졌을 때만 기록
+                    if (previousPrice != currentPrice) {
+                        prices.add(Map.of(dateTime, currentPrice));
+                    }
+                } else {
+                    // 첫 번째 라인은 비교할 이전 가격이 없으므로 기록
+                    prices.add(Map.of(dateTime, currentPrice));
+                }
+
+                // 현재 라인을 이전 라인으로 업데이트
+                previousLine = currentLine;
+            }
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + productPath + ". Error: " + e.getMessage());
         } catch (IOException e) {
@@ -91,17 +107,33 @@ public class PriceService {
                     .filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().equals(product_id + ".txt"))
                     .forEach(filePath -> {
+                        String previousLine = null;
+
                         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
-                            List<Map<String, Integer>> prices = bufferedReader.lines()
-                                    .map(line -> line.split(","))
-                                    .map(parts -> {
-                                        // 날짜와 시간 부분을 키로, 가격을 값으로 맵 구성
-                                        String dateTime = parts[0] + "," + parts[1]; // "2024-09-20,09:00" 형태
-                                        int price = Integer.parseInt(parts[2]); // "8000"을 정수로 변환
-                                        return Map.of(dateTime, price); // Map<String, Integer> 생성
-                                    })
-                                    .collect(Collectors.toList());
-                            allPrices.addAll(prices);
+                            String currentLine;
+
+                            while ((currentLine = bufferedReader.readLine()) != null) {
+                                String[] parts = currentLine.split(",");
+                                String dateTime = parts[0] + "," + parts[1];
+                                int currentPrice = Integer.parseInt(parts[2]);
+
+                                // 이전 라인의 가격과 비교
+                                if (previousLine != null) {
+                                    String[] prevParts = previousLine.split(",");
+                                    int previousPrice = Integer.parseInt(prevParts[2]);
+
+                                    // 가격이 변동되었을 때만 기록
+                                    if (previousPrice != currentPrice) {
+                                        allPrices.add(Map.of(dateTime, currentPrice));
+                                    }
+                                } else {
+                                    // 첫 번째 라인은 비교 대상이 없으므로 기록
+                                    allPrices.add(Map.of(dateTime, currentPrice));
+                                }
+
+                                // 현재 라인을 이전 라인으로 설정
+                                previousLine = currentLine;
+                            }
                         } catch (IOException e) {
                             System.err.println("Error reading file: " + filePath);
                         }
