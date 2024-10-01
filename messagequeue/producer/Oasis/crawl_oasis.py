@@ -44,6 +44,10 @@ def get_product_info(product_box):
     else:
         price = reg_price
 
+    if not price:
+        print(f"No price found in {href}")
+        return None
+
     result = {"product_id": product_id, "price": price}
     return result
 
