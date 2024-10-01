@@ -45,9 +45,9 @@ def reset_timer():
 
 
 start = time.time()
-current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 KST = datetime.timezone(datetime.timedelta(hours=9))
 now_hour = str(datetime.datetime.now(KST))[11:13]
+current_date = str(datetime.datetime.now(KST))[:10]
 
 timer = None
 
