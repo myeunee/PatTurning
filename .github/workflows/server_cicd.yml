@@ -43,6 +43,10 @@ jobs:
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
           target: /home/patturning1/deployment/
 
+      - name: Remove unused images
+        run: |
+          sudo docker image prune -f
+
       - name: Deploy to GCP VM
         if: success()
         uses: appleboy/ssh-action@v0.1.3
