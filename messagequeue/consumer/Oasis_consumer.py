@@ -20,7 +20,13 @@ credentials = pika.PlainCredentials(username, password)
 
 # RabbitMQ 연결 설정
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(hostname, port, vhost, credentials)
+    pika.ConnectionParameters(
+            hostname,
+            port,
+            vhost,
+            pika.PlainCredentials(username, password),
+            blocked_connection_timeout=300  # 5분 동안 연결 유지
+        )
 )
 channel = connection.channel()
 channel.basic_qos(prefetch_count=10)
