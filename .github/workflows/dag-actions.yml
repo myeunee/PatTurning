@@ -29,7 +29,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/HomePlus_dag.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/Oasis_dag.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Posty_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning1/airflow/dags/Posty_dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/HomePlus_dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Oasis_dag.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Posty_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Posty_dag.py
          
