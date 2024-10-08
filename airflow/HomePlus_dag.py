@@ -111,4 +111,4 @@ with DAG(
         send_post_request_HOMEPLUS_task.expand(category_id=category_ids),
     ] >> collect_task_results_task >> send_summary_email
 
-# # # # # # # # # #
+# # # # # # # # # # # # # #
