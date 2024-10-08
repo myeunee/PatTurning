@@ -29,8 +29,8 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/HomePlus_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/HomePlus_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Oasis_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/Oasis_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Posty_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning1/Posty_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/HomePlus_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning2/HomePlus_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Oasis_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning2/Oasis_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Posty_consumer.py ${GCE_USER}@${GCE_IP}:/home/patturning2/Posty_consumer.py
 
          
