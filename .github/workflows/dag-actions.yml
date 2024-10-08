@@ -14,22 +14,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install rsync  # rsync 설치 단계
-      run: sudo apt-get update --fix-missing && sudo apt-get install -y rsync
+      - name: Install rsync  # rsync 설치 단계
+        run: sudo apt-get update --fix-missing && sudo apt-get install -y rsync
 
-    - name: Set up SSH and transfer files
-      env:
-        GCE_IP: ${{ secrets.GCE_IP }}
-        GCE_USER: ${{ secrets.GCE_USER }}
-        GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa  # SSH 키 권한 설정
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/HomePlus_dag.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Oasis_dag.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Posty_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Posty_dag.py
-
+      - name: Set up SSH and transfer files
+        env:
+          GCE_IP: ${{ secrets.GCE_IP }}
+          GCE_USER: ${{ secrets.GCE_USER }}
+          GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa  # SSH 키 권한 설정
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/HomePlus_dag.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Oasis_dag.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Posty_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Posty_dag.py
