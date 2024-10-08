@@ -17,8 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install rsync  # rsync 설치 단계
-        run: sudo apt-get update --fix-missing && sudo apt-get install -y rsync
+      - name: Clean apt-get cache  # rsync 설치 단계
+        run: sudo apt-get update --fix-missing
+
+      - name: Install rsync
+        run: |
+          sudo apt-get install -y rsync
+          which rsync  # 설치 확인
+
+      - name: check if rsync is installed
+        run: which rsync
 
       - name: Set up SSH and transfer files
         env:
