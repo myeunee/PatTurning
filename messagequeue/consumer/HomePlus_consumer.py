@@ -95,4 +95,4 @@ channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 logging.info('Waiting for messages. To exit press CTRL+C')
 reset_timer()
 channel.start_consuming()
-# # # # #
+
