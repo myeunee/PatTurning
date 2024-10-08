@@ -22,7 +22,7 @@ jobs:
 
       - name: Install rsync
         run: |
-          sudo apt-get install -y rsync
+          apt-get install -y rsync
           which rsync  # 설치 확인
 
       - name: check if rsync is installed
