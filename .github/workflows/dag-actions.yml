@@ -28,6 +28,9 @@ jobs:
       - name: check if rsync is installed
         run: which rsync
 
+      - name: Add /usr/bin to PATH
+        run: echo 'export PATH="/usr/bin:$PATH"' >> $GITHUB_ENV
+
       - name: Set up SSH and transfer files
         env:
           GCE_IP: ${{ secrets.GCE_IP }}
