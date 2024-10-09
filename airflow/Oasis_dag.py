@@ -1,5 +1,10 @@
 from .requirements.modules import collect_task_results, send_post_request
-from .requirements.packages import *
+from airflow.operators.bash import BashOperator
+from airflow.operators.email import EmailOperator
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.decorators import task
 
 # DAG의 기본 설정
 default_args = {
