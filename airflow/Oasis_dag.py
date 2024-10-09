@@ -11,7 +11,7 @@ default_args = {
 
 # DAG 정의
 with DAG(
-    "Oasis_Crawling_DAG",  # DAG의 이름
+    dag_id="Oasis_Crawling_DAG",  # DAG의 이름
     default_args=default_args,  # 기본 인자 설정
     description="Oasis Crawling",  # DAG 설명
     schedule_interval="0 * * * *",

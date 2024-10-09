@@ -11,7 +11,7 @@ default_args = {
 
 # DAG 정의
 with DAG(
-    "HomePlus_Crawling_DAG",
+    dag_id="HomePlus_Crawling_DAG",
     default_args=default_args,
     description="HomePlus Crawling",
     schedule_interval="0 * * * *",
