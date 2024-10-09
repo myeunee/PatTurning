@@ -1,5 +1,5 @@
-from modules import collect_task_results, send_post_request
-from packages import *
+from .requirements.modules import collect_task_results, send_post_request
+from .requirements.packages import *
 
 # DAG의 기본 설정
 default_args = {
