@@ -1,4 +1,4 @@
-from .requirements.modules import collect_task_results, send_post_request
+from requirements.modules import collect_task_results, send_post_request
 from airflow.operators.bash import BashOperator
 from airflow.operators.email import EmailOperator
 from airflow.operators.python import PythonOperator
