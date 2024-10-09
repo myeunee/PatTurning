@@ -56,6 +56,6 @@ with DAG(
         trigger_rule="all_done",
     )
     [
-        send_post_request_OASIS_task()
+        send_post_request_OASIS_task(),
         run_consumer_task
     ] >> collect_task_results_task >> send_summary_email
