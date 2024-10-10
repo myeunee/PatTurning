@@ -34,11 +34,12 @@ def send_post_request(platform, categoryId):
     url = ""
     if platform == 'HP':
         url = os.getenv("HOMEPLUS_SERVICE_URL")
+        headers = {"Content-Type": "application/json"}
+        data = json.dumps({"category_id": categoryId})
+        response = requests.post(url, headers=headers, data=data)
     elif platform == 'OA':
         url = os.getenv("OASIS_SERVICE_URL")
-    headers = {"Content-Type": "application/json"}
-    data = json.dumps({"category_id": categoryId})
-    response = requests.post(url, headers=headers, data=data)
+        response = requests.post(url)
 
     if response.status_code == 200:
         print(f"Success: {response.json()}")
