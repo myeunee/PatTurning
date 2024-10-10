@@ -35,13 +35,13 @@ class RabbitMQProducer:
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.host,
-                virtual_host="/",  # 기본 가상 호스트 사용
+                virtual_host="/",
                 port=self.port,
                 credentials=credentials,
             )
         )
         channel = self.connection.channel()  # 채널 생성
-        channel.queue_declare(queue=self.queue, durable=True)  # 큐 선언, durable=True로 설정하여 메시지 내구성 보장
+        channel.queue_declare(queue=self.queue, durable=True)
 
         # 데이터가 리스트 형태인지 확인
         if isinstance(data, list):
@@ -53,14 +53,14 @@ class RabbitMQProducer:
                     try:
                         # 메시지를 큐에 전송
                         channel.basic_publish(
-                            exchange="",  # 기본 익스체인지 사용
-                            routing_key=self.queue,  # 큐 이름을 라우팅 키로 사용
-                            body=json_message,  # 메시지 본문
-                            properties=pika.BasicProperties(delivery_mode=2),  # 메시지 내구성 보장
+                            exchange="",
+                            routing_key=self.queue,
+                            body=json_message,
+                            properties=pika.BasicProperties(delivery_mode=2),
                         )
-                        logging.info(f"Message sent: {json_message}")  # 메시지 전송 성공 로그
+                        logging.info(f"Message sent: {json_message}")
                     except Exception as e:
-                        logging.info(f"Error sending message: {e}")  # 메시지 전송 실패 로그
+                        logging.info(f"Error sending message: {e}")
                 else:
                     logging.info("Skipping non-dictionary item in list.")  # 리스트의 비딕셔너리 항목 건너뜀
         else:
@@ -74,9 +74,9 @@ class RabbitMQProducer:
                     body=json_message,
                     properties=pika.BasicProperties(delivery_mode=2),
                 )
-                logging.info(f"Message sent: {json_message}")  # 메시지 전송 성공 로그
+                logging.info(f"Message sent: {json_message}")
             except Exception as e:
-                logging.info(f"Error sending message: {e}")  # 메시지 전송 실패 로그
+                logging.info(f"Error sending message: {e}")
 
     def close(self):
         """
