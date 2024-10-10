@@ -32,7 +32,7 @@ with DAG(
 ) as dag:
 
     @task
-    def send_post_request_task(category_id):
+    def send_post_request_task(category_id: int):
         return send_post_request('HP', category_id)
 
     # TaskFlow API로 task 정의
