@@ -5,6 +5,11 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.decorators import task
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+user_home=os.getenv('USER_HOME')
 
 # DAG 기본 설정
 default_args = {
@@ -40,7 +45,7 @@ with DAG(
     # BashOperator에서 expand로 받은 값을 사용
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command="python3 /home/patturning2/HomePlus_consumer.py {{ params.consumer }}",
+        bash_command=f"python3 {user_home}/HomePlus_consumer.py {{ params.consumer }}",
     ).expand(params=generate_queue_values())
 
     category_ids = list(range(100001, 100078))

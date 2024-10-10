@@ -5,6 +5,12 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.decorators import task
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+user_home=os.getenv('USER_HOME')
+
 
 # DAG의 기본 설정
 default_args = {
@@ -36,7 +42,7 @@ with DAG(
     # BashOperator에서 expand로 받은 값을 사용
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command="python3 /home/patturning2/Oasis_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
+        bash_command=f"python3 {user_home}/Oasis_consumer.py {{ params.consumer }}",  # 템플릿을 사용하여 매핑된 값 사용
     ).expand(params=generate_queue_values())
 
     # 모든 태스크가 완료된 후 상태를 수집

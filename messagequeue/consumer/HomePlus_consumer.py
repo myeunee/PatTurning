@@ -9,12 +9,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
 load_dotenv()
+mount_home = os.getenv('MOUNT_HOME')
 username = os.getenv('RABBITMQ_USERNAME')
 password = os.getenv('RABBITMQ_PASSWORD')
 hostname = os.getenv('RABBITMQ_HOSTNAME')
 port = os.getenv('RABBITMQ_PORT')
 vhost = os.getenv('RABBITMQ_VHOST')
 queue = sys.argv[1]
+
 
 while True:
     try:
@@ -75,12 +77,12 @@ def callback(ch, method, properties, body):
     product_id = message_json['product_id']
     price = message_json['price']
 
-    if not os.path.exists(f"/mnt/patturning/HomePlus/{category_name}"):
-        os.makedirs(f"/mnt/patturning/HomePlus/{category_name}/")
-        logging.info(f"Directory /mnt/patturning/HomePlus/{category_name}/ created")
+    if not os.path.exists(f"{mount_home}/HomePlus/{category_name}"):
+        os.makedirs(f"{mount_home}/HomePlus/{category_name}/")
+        logging.info(f"Directory {mount_home}/HomePlus/{category_name}/ created")
     # else:
         # print(f"Directory ./homeplus/{category_name}/ already exists")
-    with open(f'/mnt/patturning/HomePlus/{category_name}/{product_id}.txt', 'a') as f:
+    with open(f'{mount_home}/HomePlus/{category_name}/{product_id}.txt', 'a') as f:
         f.write(f"{current_date},{now_hour}:00,{price}\n")
     if cnt % 10000 == 0:
         end = time.time()
