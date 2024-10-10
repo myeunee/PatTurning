@@ -7,7 +7,7 @@ cnt = 0
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
-PLATFORM = "PLATFORM_NAME"
+platform = "PLATFORM_NAME"
 
 load_dotenv()
 username = os.getenv('RABBITMQ_USERNAME')
@@ -15,7 +15,7 @@ password = os.getenv('RABBITMQ_PASSWORD')
 hostname = os.getenv('RABBITMQ_HOSTNAME')
 port = os.getenv('RABBITMQ_PORT')
 vhost = os.getenv('RABBITMQ_VHOST')
-MOUNT_HOME = os.getenv('MOUNT_HOME')
+mount_home = os.getenv('MOUNT_HOME')
 
 queue = sys.argv[1]  # argument로 받아 온 queue 이름
 
@@ -78,13 +78,13 @@ def callback(ch, method, properties, body):
     price = message_json['price']
 
     if category_name:
-        if not os.path.exists(f"{MOUNT_HOME}/{PLATFORM}/{category_name}"):
-            os.makedirs(f"{MOUNT_HOME}/{PLATFORM}/{category_name}/")
-            logging.info(f"Directory {MOUNT_HOME}/{PLATFORM}/{category_name}/ created")
-            with open(f'{MOUNT_HOME}/{PLATFORM}/{category_name}/{product_id}.txt', 'a') as f:
+        if not os.path.exists(f"{mount_home}/{platform}/{category_name}"):
+            os.makedirs(f"{mount_home}/{platform}/{category_name}/")
+            logging.info(f"Directory {mount_home}/{platform}/{category_name}/ created")
+            with open(f'{mount_home}/{platform}/{category_name}/{product_id}.txt', 'a') as f:
                 f.write(f"{current_date},{now_hour}:00,{price}\n")
     else:
-        with open(f"{MOUNT_HOME}/{PLATFORM}/{product_id}.txt", "a") as f:
+        with open(f"{mount_home}/{platform}/{product_id}.txt", "a") as f:
             f.write(f"{current_date},{now_hour}:00,{price}\n")
     
     if cnt % 10000 == 0:
