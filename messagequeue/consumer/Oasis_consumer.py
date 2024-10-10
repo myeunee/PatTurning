@@ -8,6 +8,7 @@ cnt = 0
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
 load_dotenv()
+mount_home = os.getenv('MOUNT_HOME')
 username = os.getenv("RABBITMQ_USERNAME")
 password = os.getenv("RABBITMQ_PASSWORD")
 hostname = os.getenv("RABBITMQ_HOSTNAME")
@@ -74,7 +75,7 @@ def callback(ch, method, properties, body):
     product_id = message_json["product_id"]
     price = message_json["price"]
 
-    with open(f"/mnt/patturning/Oasis/{product_id}.txt", "a") as f:
+    with open(f"{mount_home}/Oasis/{product_id}.txt", "a") as f:
         f.write(f"{current_date},{now_hour}:00,{price}\n")
     if cnt % 10000 == 0:
         end = time.time()
