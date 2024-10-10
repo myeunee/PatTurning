@@ -8,7 +8,7 @@ def collect_task_results(**context):
     task_instances = context['dag_run'].get_task_instances()
     task_states = {task_instance.task_id: task_instance.state for task_instance in task_instances}
 
-    platform=''
+    platform='None'
     for k, y in task_states:
         if 'HOMEPLUS' in k:
             platform = 'HOMEPLUS'
