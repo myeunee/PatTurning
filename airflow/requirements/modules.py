@@ -8,16 +8,23 @@ def collect_task_results(**context):
     task_instances = context['dag_run'].get_task_instances()
     task_states = {task_instance.task_id: task_instance.state for task_instance in task_instances}
 
+    platform=''
+    for k, y in task_states:
+        if 'HOMEPLUS' in k:
+            platform = 'HOMEPLUS'
+        elif 'OASIS' in k:
+            platform = 'OASIS'
+            
     # 실패한 태스크가 있는지 확인
     if any(state == 'failed' for state in task_states.values()):
-        email_subject = "Task Failure Alert"
+        email_subject = f"❗️ [{platform}] Task Failure Alert ❗️"
         email_body = f"""
         <h3>One or more tasks have failed!</h3>
         <p>Task States:</p>
         <pre>{task_states}</pre>
         """
     else:
-        email_subject = "Task Success Alert"
+        email_subject = f"[{platform}] Task Success Alert"
         email_body = f"""
         <h3>All tasks have completed successfully!</h3>
         <p>Task States:</p>
