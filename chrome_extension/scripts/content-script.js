@@ -90,56 +90,59 @@ function createTooltipElement(label) {
 
 
 function displayDarkPatterns(data) {
-    data.forEach(pattern => {
-        const element = document.evaluate(pattern.xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        
-        if (element) {
-            const tooltip = createTooltipElement(pattern.label);
-            
-            switch (pattern.label) {
-                case 1:
-                    tooltip.innerText = '⚠️ 거짓 정보이거나 유인 판매일 수 있어요.';
-                    break;
-                case 2:
-                    tooltip.innerText ='⚠️ 의사 결정을 방해해요.';
-                    break;
-                case 3:
-                    tooltip.innerText ='⚠️ 소비 압박을 가해요.';
-                    break;
-                default:
-                    tooltip.innerText ='알 수 없는 라벨';
+    chrome.storage.local.get('checkedLabels', ({ checkedLabels }) => {
+        data.forEach(pattern => {
+            if (checkedLabels.includes(pattern.label)) { // 체크된 라벨만 표시
+                const element = document.evaluate(pattern.xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                if (element) {
+                    const tooltip = createTooltipElement(pattern.label);
+                    
+                    switch (pattern.label) {
+                        case 1:
+                            tooltip.innerText = '⚠️ 거짓 정보이거나 유인 판매일 수 있어요.';
+                            break;
+                        case 2:
+                            tooltip.innerText ='⚠️ 소비 압박을 가해요.';
+                            break;
+                        case 3:
+                            tooltip.innerText ='⚠️ 빠른 소비를 유도해요.';
+                            break;
+                        case 4:
+                            tooltip.innerText ='⚠️ 다른 사용자의 행동을 따라하도록 유도해요.';
+                            break;
+                        default:
+                            tooltip.innerText ='알 수 없는 라벨';
+                    }
+
+                    // 툴팁 스타일 및 위치 설정
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.backgroundColor = '#333';
+                    tooltip.style.color = '#fff';
+                    tooltip.style.padding = '5px';
+                    tooltip.style.borderRadius = '5px';
+                    tooltip.style.zIndex = '1000';
+                    tooltip.style.visibility = 'hidden';
+
+                    document.body.appendChild(tooltip);
+                    
+                    const rect = element.getBoundingClientRect();
+                    tooltip.style.top = `${window.scrollY + rect.top - tooltip.offsetHeight - 5}px`;
+                    tooltip.style.left = `${window.scrollX + rect.left}px`;
+
+                    element.addEventListener('mouseenter', () => {
+                        tooltip.style.visibility = 'visible';
+                    });
+
+                    element.addEventListener('mouseleave', () => {
+                        tooltip.style.visibility = 'hidden';
+                    });
+
+                    blurElement(pattern.xpath);
+                } else {
+                    console.log('Element not found for XPath:', pattern.xpath);
+                }
             }
-            
-            // 툴팁 스타일 설정
-            tooltip.style.position = 'absolute';
-            tooltip.style.backgroundColor = '#333';
-            tooltip.style.color = '#fff';
-            tooltip.style.padding = '5px';
-            tooltip.style.borderRadius = '5px';
-            tooltip.style.zIndex = '1000';
-            tooltip.style.visibility = 'hidden';
-
-            document.body.appendChild(tooltip);
-            
-            // 요소의 위치 계산
-            const rect = element.getBoundingClientRect();
-            tooltip.style.top = `${window.scrollY + rect.top - tooltip.offsetHeight - 5}px`; // 요소의 바로 위에 위치
-            tooltip.style.left = `${window.scrollX + rect.left}px`; // 요소의 왼쪽 정렬
-
-            // 툴팁을 호버 시 보이게 설정
-            element.addEventListener('mouseenter', () => {
-                tooltip.style.visibility = 'visible';
-            });
-
-            element.addEventListener('mouseleave', () => {
-                tooltip.style.visibility = 'hidden';
-            });
-
-            // 블러 처리
-            blurElement(pattern.xpath);
-        } else {
-            console.log('Element not found for XPath:', pattern.xpath);
-        }
+        });
     });
 }
 
@@ -274,7 +277,6 @@ function getGmarketProductId(url) {
 // Posty의 URL에서 productId 추출
 function getPostyProductId(url) {
     const productIdMatch = url.match(/products\/(\d+)/);
-    console.log('포스티 상품 아이디: ', productIdMatch);
     return productIdMatch ? productIdMatch[1] : null;
 }
 
@@ -325,28 +327,32 @@ function waitForCategoryAndProductId() {
         const productInfo = await fetchCategoryAndProductId();
         
         if (productInfo) {
+            console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓')
+            console.log('platform:', productInfo.platform);
+            console.log('categoryName:', productInfo.categoryName);
+            console.log('productId:', productInfo.productId);
+            console.log('〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓');
+
             obs.disconnect(); // 요소를 찾으면 옵저버를 중지함
+
+            // 백그라운드 스크립트에 가격 정보를 요청하는 메시지 전송
             chrome.runtime.sendMessage(
                 { action: 'fetchPriceInfo', payload: productInfo },
                 (response) => {
+
                     if (chrome.runtime.lastError) {
                         console.error('Runtime error:', chrome.runtime.lastError.message);
                         return;
                     }
 
                     console.log('[waitForCategoryAndProductId] response: ', response);
-                    console.log('[waitForCategoryAndProductId] response.status: ', response.status);
                     
                     if (response && response.status === 'success') {
                         console.log('Price Info received:', response.data);
-                        
-                        // categoryName이 없어도 Posty의 경우 호출할 수 있도록 처리
-                        fetchAndDisplayPriceHistory(
-                            productInfo.platform,
-                            productInfo.categoryName || null,
-                            productInfo.productId,
-                            document.body
-                        );                        
+
+                        // 받은 데이터를 이용하여 그래프를 그리는 함수 호출
+                        renderPriceChart(response.data[0], document.body); // response.data[0]으로 첫 번째 배열 요소 전달
+
                     } else {
                         console.error('[waitForCategoryAndProductId] 가격 정보 못 받음:', response.message);
 
@@ -365,36 +371,7 @@ window.addEventListener('load', function() {
 
     // 제품 정보 및 가격 정보 초기화
     waitForCategoryAndProductId();
-
-    // 다크 패턴 탐지 초기화
-    initializeDarkPatternDetection();
-
-    // 가격 정보 표시 초기화
-    initializePriceInfoDisplay();
 });
-
-
-function initializeDarkPatternDetection() {
-    chrome.storage.local.get("darkPatternDetection", (result) => {
-        if (result.darkPatternDetection) {
-            detectDarkPatterns(); // 페이지 로드 시 다크 패턴 탐지 실행
-        }
-    });
-}
-
-function initializePriceInfoDisplay() {
-    fetchCategoryAndProductId().then(productInfo => {
-        if (productInfo) {
-            // categoryName이 없어도 Posty의 경우 호출할 수 있도록 처리
-            fetchAndDisplayPriceHistory(
-                productInfo.platform,
-                productInfo.categoryName || null,
-                productInfo.productId,
-                target
-            );
-                       }
-    });
-}
 
 
 function renderPriceChart(data, target) {
@@ -491,8 +468,8 @@ function renderPriceChart(data, target) {
 
     // 캔버스 엘리먼트를 만들고, 이를 그래프 컨테이너에 추가
     const canvas = document.createElement('canvas');
-    canvas.style.width = '100%';
-    canvas.style.height = '150px';
+    canvas.width = 400;  // 실제 그래픽을 그릴 넓이
+    canvas.height = 150; // 실제 그래픽을 그릴 높이    
     canvas.id = 'priceChart'; // 캔버스 ID 설정
     priceHistoryBox.appendChild(canvas);
 
@@ -587,64 +564,6 @@ function renderPriceChart(data, target) {
     
     });
 }
-
-
-
-
-
-
-
-// 가격 변동 정보 요청 및 표시
-async function fetchAndDisplayPriceHistory(platform, categoryName, productId, target) {
-    
-    try {
-        console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓')
-        console.log('priceUrl:', priceUrl);
-        console.log('platform:', platform);
-        console.log('categoryName:', categoryName);
-        console.log('productId:', productId);
-
-        // 플랫폼에 따라 API URL을 다르게 설정
-        let apiUrl;
-        if (platform === 'Posty') {
-            apiUrl = `${priceUrl}/price-info/${platform}/${productId}`;
-        } else {
-            apiUrl = `${priceUrl}/price-info/${platform}/${productId}/${categoryName}`;
-        }
-
-        console.log('API URL:', apiUrl);
-        console.log('〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓');
-
-        if (!categoryName && platform !== 'Posty') {
-            console.error('Category name is missing or undefined.');
-            return;
-        }
-
-        const response = await fetch(apiUrl);
-        console.log('[fetchAndDisplayPriceHistory] response:', response);
-
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch price history');
-        } 
-
-        const data = await response.json();
-        console.log('Full data structure:', JSON.stringify(data, null, 2));
-        console.log('Price data received:', data);
-
-
-        // 데이터가 있는지 확인
-        if (data && data.prices && data.prices.length > 0) {
-            // 데이터가 있으면 그래프를 그립니다.
-            renderPriceChart(data, target);
-        } else {
-            console.error('No price data available');
-        }
-        } catch (error) {
-            console.error('Error fetching and displaying price history:', error);
-        }
-}
-
 
 
 // 페이지가 로드될 때마다 다크패턴 탐지, 가격 정보 갱신

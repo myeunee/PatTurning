@@ -9,7 +9,7 @@ function sendMessage(action, successMessage, failureMessage) {
         chrome.tabs.sendMessage(tabs[0].id, { action }, (response) => {
             if (chrome.runtime.lastError) {
                 console.error('Runtime error:', chrome.runtime.lastError.message);
-                updateStatus("다크 패턴이 감지되었습니다.");              
+                updateStatus("다크 패턴 탐지 OFF");              
                 return;
             }
 
@@ -22,7 +22,7 @@ function sendMessage(action, successMessage, failureMessage) {
                     updateStatus(failureMessage);
                 }
             } else {
-                updateStatus("다크 패턴이 감지되었습니다.");   
+                updateStatus("다크 패턴 탐지 ON");   
             }
         });
     });
@@ -49,9 +49,49 @@ switchElement.addEventListener('change', (event) => {
             sendMessage("detectDarkPatterns", "다크 패턴이 감지되었습니다.", "다크 패턴이 감지되지 않았습니다.");
         });
     } else {
-        // releaseDarkPatterns 활성화
+        // releaseDarkPatterns 비활성화
         chrome.storage.local.set({ darkPatternDetection: false }, () => {
             sendMessage("releaseDarkPatterns", "다크 패턴이 해제되었습니다.", "다크 패턴을 해제할 수 없습니다.");
         });
     }
+});
+
+
+// 체크된 버튼의 라벨 값 관리
+document.addEventListener('DOMContentLoaded', () => {
+    const checkboxes = document.querySelectorAll('.filter-checkbox');
+    const labelFiltersDiv = document.getElementById('label-filters');
+    const switchInput = document.getElementById('switch');
+
+    // 스위치 초기 상태에 따라 체크박스 표시 제어
+    chrome.storage.local.get('darkPatternDetection', (result) => {
+        if (result.darkPatternDetection === true) {
+            switchInput.checked = true;
+            labelFiltersDiv.style.display = 'block'; // 스위치가 켜져 있으면 체크박스 표시
+        } else {
+            switchInput.checked = false;
+            labelFiltersDiv.style.display = 'none'; // 스위치가 꺼져 있으면 체크박스 숨김
+        }
+    });
+
+    // 스위치 상태에 따라 체크박스 표시 제어
+    switchInput.addEventListener('change', () => {
+        if (switchInput.checked) {
+            labelFiltersDiv.style.display = 'block';  // 스위치가 켜지면 체크박스들 표시
+        } else {
+            labelFiltersDiv.style.display = 'none';   // 스위치가 꺼지면 체크박스들 숨김
+        }
+    });
+
+    // 체크박스 상태 변경 이벤트 처리
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const checkedLabels = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => parseInt(cb.value));
+            chrome.storage.local.set({ 'checkedLabels': checkedLabels }, () => {
+                console.log('Selected labels:', checkedLabels);
+            });
+        });
+    });
 });

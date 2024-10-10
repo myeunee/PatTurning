@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="../styles/popup.css" />
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 </head>
 <body>
     <div>
@@ -20,13 +20,25 @@
             </label>
         </div>
         <div id="status3"></div>
+        <div id="label-filters" style="display: none;">
+            <label>
+                <input type="checkbox" id="label1" class="filter-checkbox" value="1"> 거짓 정보이거나 유인 판매일 수 있어요.<br/>
+            </label>
+            <label>
+                <input type="checkbox" id="label2" class="filter-checkbox" value="2"> 소비 압박을 가해요. <br/>
+            </label>
+            <label>
+                <input type="checkbox" id="label3" class="filter-checkbox" value="3"> 빠른 소비를 유도해요. <br/>
+            </label>
+            <label>
+                <input type="checkbox" id="label4" class="filter-checkbox" value="4"> 라다른 사용자의 행동을 따라하도록 유도해요. <br/>
+            </label>
+        </div>
     </div>
     <ul></ul>
     <script src="../scripts/popup-handler.js" type="module"></script>   
     <script src="../scripts/content-script.js" type="module"></script>   
     <script src="../scripts/background.js" type="module"></script>   
-    <script src="../manifest.json" type="module"></script>   
-
-
+    <script src="../manifest.json" type="module"></script>  
 </body>
 </html>

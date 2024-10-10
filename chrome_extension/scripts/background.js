@@ -50,17 +50,17 @@ async function fetchDataFromServer(action, payload) {
     } 
     
     if (action === "fetchPriceInfo") {
-        const { platform, productId, categoryName } = payload;
+        const { platform, productId, categoryName = null } = payload;
 
         let url;
         if (platform === 'Posty') {
             url = `${priceUrl}/price-info/${platform}/${productId}`;
         } else {
-            url = `${priceUrl}/price-info/${platform}/${productId}/${categoryName}`;
+            url = `${priceUrl}/price-info/${platform}/${productId}/${categoryName || ''}`;
         }
 
         const options = { method: 'GET' };
-        console.log('[fetchDataFromServer 백그라운드] priceUrl: ', url);
+        console.log('[fetchDataFromServer 백그라운드] API URL: ', url);
         requests.push(fetch(url, options).then(res => {
             if (!res.ok) {
                 throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
@@ -72,6 +72,7 @@ async function fetchDataFromServer(action, payload) {
     if (requests.length === 0) {
         throw new Error('Unknown action type');
     }
+
 
     try {
         const results = await Promise.all(requests);
