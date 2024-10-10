@@ -9,7 +9,7 @@ def collect_task_results(**context):
     task_states = {task_instance.task_id: task_instance.state for task_instance in task_instances}
 
     platform='None'
-    for k, y in task_states:
+    for k, y in task_states.items():
         if 'HOMEPLUS' in k:
             platform = 'HOMEPLUS'
         elif 'OASIS' in k:
