@@ -1,5 +1,4 @@
 import pika
-import os
 import json
 import logging
 
