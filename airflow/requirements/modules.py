@@ -29,7 +29,7 @@ def collect_task_results(**context):
     context['ti'].xcom_push(key='email_body', value=email_body)
     
 # HTTP POST 요청 함수
-def send_post_request(platform, categoryId):
+def send_post_request(platform, categoryId=0):
     load_dotenv()
     url = ""
     if platform == 'HP':
