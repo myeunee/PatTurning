@@ -48,6 +48,7 @@ jobs:
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
           target: /home/patturning2/deployment/
           proxy_host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }}
+          proxy_key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
           proxy_port: 22
 
       - name: Remove unused images
