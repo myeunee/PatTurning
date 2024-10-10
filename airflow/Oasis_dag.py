@@ -26,7 +26,7 @@ with DAG(
 
     @task
     def send_post_request_OASIS_task():
-        return send_post_request()
+        return send_post_request('OA')
 
     # TaskFlow API로 task 정의
     @task

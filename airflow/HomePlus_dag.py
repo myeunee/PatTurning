@@ -26,7 +26,7 @@ with DAG(
 
     @task
     def send_post_request_HOMEPLUS_task(category_id):
-        return send_post_request(category_id)
+        return send_post_request('HP', category_id)
 
     # TaskFlow API로 task 정의
     @task

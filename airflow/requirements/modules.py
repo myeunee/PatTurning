@@ -29,9 +29,13 @@ def collect_task_results(**context):
     context['ti'].xcom_push(key='email_body', value=email_body)
     
 # HTTP POST 요청 함수
-def send_post_request(categoryId):
+def send_post_request(platform, categoryId):
     load_dotenv()
-    url = os.getenv("HOMEPLUS_SERVICE_URL")
+    url = ""
+    if platform == 'HP':
+        url = os.getenv("HOMEPLUS_SERVICE_URL")
+    elif platform == 'OA':
+        url = os.getenv("OASIS_SERVICE_URL")
     headers = {"Content-Type": "application/json"}
     data = json.dumps({"category_id": categoryId})
     response = requests.post(url, headers=headers, data=data)
