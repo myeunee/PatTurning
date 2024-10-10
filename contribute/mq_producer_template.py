@@ -6,6 +6,15 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
 class RabbitMQProducer:
     def __init__(self, host, port, username, password, queue):
+        """
+        RabbitMQProducer 클래스의 생성자.
+        
+        :param host: RabbitMQ 서버의 호스트 이름 또는 IP 주소
+        :param port: RabbitMQ 서버의 포트 번호
+        :param username: RabbitMQ 서버에 접속하기 위한 사용자 이름
+        :param password: RabbitMQ 서버에 접속하기 위한 비밀번호
+        :param queue: 메시지를 전송할 큐의 이름
+        """
         self.host = host
         self.port = port
         self.username = username
@@ -13,50 +22,67 @@ class RabbitMQProducer:
         self.queue = queue
 
     def produce(self, data):
+        """
+        데이터를 RabbitMQ 큐에 전송하는 함수.
+        
+        :param data: 전송할 데이터. 딕셔너리 또는 딕셔너리의 리스트 형태여야 함.
+        :return: None
+        """
+        # RabbitMQ 서버에 연결하기 위한 인증 정보 설정
         credentials = pika.PlainCredentials(self.username, self.password)
 
+        # RabbitMQ 서버에 연결 설정
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.host,
-                virtual_host="/",
+                virtual_host="/",  # 기본 가상 호스트 사용
                 port=self.port,
                 credentials=credentials,
             )
         )
-        channel = self.connection.channel()
-        channel.queue_declare(queue=self.queue, durable=True)
+        channel = self.connection.channel()  # 채널 생성
+        channel.queue_declare(queue=self.queue, durable=True)  # 큐 선언, durable=True로 설정하여 메시지 내구성 보장
 
-        # 리스트로 받은 data의 각 딕셔너리를 개별적으로 전송
+        # 데이터가 리스트 형태인지 확인
         if isinstance(data, list):
             for item in data:
-                # item이 dict 형태인지 확인하고, JSON으로 변환하여 전송
+                # 리스트의 각 항목이 딕셔너리인지 확인
                 if isinstance(item, dict):
+                    # 딕셔너리를 JSON 형식으로 직렬화
                     json_message = json.dumps(item).encode("utf-8")
                     try:
+                        # 메시지를 큐에 전송
                         channel.basic_publish(
-                            exchange="",
-                            routing_key=self.queue,
-                            body=json_message,
-                            properties=pika.BasicProperties(delivery_mode=2),
+                            exchange="",  # 기본 익스체인지 사용
+                            routing_key=self.queue,  # 큐 이름을 라우팅 키로 사용
+                            body=json_message,  # 메시지 본문
+                            properties=pika.BasicProperties(delivery_mode=2),  # 메시지 내구성 보장
                         )
-                        print(f"Message sent: {json_message}")
+                        logging.info(f"Message sent: {json_message}")  # 메시지 전송 성공 로그
                     except Exception as e:
-                        print(f"Error sending message: {e}")
+                        logging.info(f"Error sending message: {e}")  # 메시지 전송 실패 로그
                 else:
-                    print("Skipping non-dictionary item in list.")
+                    logging.info("Skipping non-dictionary item in list.")  # 리스트의 비딕셔너리 항목 건너뜀
         else:
-            # 단일 데이터를 JSON으로 직렬화하여 전송
+            # 단일 데이터의 경우 JSON 형식으로 직렬화
             json_message = json.dumps(data).encode("utf-8")
             try:
+                # 메시지를 큐에 전송
                 channel.basic_publish(
                     exchange="",
                     routing_key=self.queue,
                     body=json_message,
                     properties=pika.BasicProperties(delivery_mode=2),
                 )
-                print(f"Message sent: {json_message}")
+                logging.info(f"Message sent: {json_message}")  # 메시지 전송 성공 로그
             except Exception as e:
-                print(f"Error sending message: {e}")
+                logging.info(f"Error sending message: {e}")  # 메시지 전송 실패 로그
 
     def close(self):
+        """
+        RabbitMQ 서버와의 연결을 종료하는 함수.
+        
+        :return: None
+        """
+        # RabbitMQ 연결 종료
         self.connection.close()
