@@ -32,32 +32,34 @@ jobs:
           cd server
           ./gradlew build -x test
 
-      - name: Deliver jar File through Bastion Host
+      - name: Deliver jar File to Bastion Host
         if: success()
         uses: appleboy/scp-action@v0.1.5
         with:
-          host: ${{ secrets.GCP_BASTION_HOST }}
-          username: ${{ secrets.GCP_BASTION_USER }}
-          key: ${{ secrets.GCP_BASTION_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.GCP_SERVER_VM_HOST }} 
+          username: ${{ secrets.GCP_SERVER_VM_USER }} 
+          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
           port: 22
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
-          target: /home/patturning2/server/Dark-Pattern-Detection-SWDeveloperContest/deployment/
+          target: /home/patturning2/deployment/
 
-      - name: Remove unused images
+      - name: Deliver jar File to Internal Server through Bastion Host
         run: |
-          sudo docker image prune -f
+          ssh -i <(echo "${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}") -o StrictHostKeyChecking=no patturning2@${{ secrets.GCP_SERVER_VM_HOST }} \
+          "scp -i <(echo '${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }}') /home/patturning2/deployment/swdc-0.0.1-SNAPSHOT.jar patturning2@${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }}:/home/patturning2/server/Dark-Pattern-Detection-SWDeveloperContest/deployment/"
 
       - name: Deploy to Internal Server through Bastion Host
         if: success()
         run: |
           ssh -o StrictHostKeyChecking=no \
-            -i <(echo "${{ secrets.GCP_BASTION_SSH_PRIVATE_KEY }}") \
-            -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -i <(echo '${{ secrets.GCP_BASTION_SSH_PRIVATE_KEY }}') ${{ secrets.GCP_BASTION_USER }}@${{ secrets.GCP_BASTION_HOST }}" \
+            -i <(echo "${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}") \
+            -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -i <(echo '${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}') ${{ secrets.GCP_SERVER_VM_USER }}@${{ secrets.GCP_SERVER_VM_HOST }}" \
             ${{ secrets.GCP_INTERNAL_SERVER_USER }}@${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} << EOF
+              sudo docker image prune -f
               sudo docker stop swdc-container || true
               sudo docker rm swdc-container || true
 
               cd /home/patturning2/server/Dark-Pattern-Detection-SWDeveloperContest/deployment
               sudo docker build -t swdc-app .
               sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt swdc-app
-            EOF
+
