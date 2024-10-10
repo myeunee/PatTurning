@@ -17,7 +17,7 @@ def collect_task_results(**context):
             
     # 실패한 태스크가 있는지 확인
     if any(state == 'failed' for state in task_states.values()):
-        email_subject = f"❗️ [{platform}] Task Failure Alert ❗️"
+        email_subject = f"❗️[{platform}] Task Failure Alert "
         email_body = f"""
         <h3>One or more tasks have failed!</h3>
         <p>Task States:</p>
