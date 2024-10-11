@@ -45,7 +45,7 @@ with DAG(
     # BashOperator에서 expand로 받은 값을 사용
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command=f"python3 {user_home}/HomePlus_consumer.py" +  "{{ params.consumer }}",
+        bash_command=f"python3 {user_home}/HomePlus_consumer.py " +  "{{ params.consumer }}",
     ).expand(params=generate_queue_values())
 
     category_ids = list(range(100001, 100078))
