@@ -3,8 +3,8 @@ name: server CI/CD Pipeline
 
 on:
   push:
-    paths: 
-      - "server/**"
+    # paths: 
+    #   - "server/**"
     branches:
       - main
 
@@ -46,7 +46,7 @@ jobs:
       - name: Deliver jar File to Internal Server through Bastion Host
         run: |
           ssh -i <(echo "${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }}") -o StrictHostKeyChecking=no patturning2@${{ secrets.GCP_SERVER_VM_HOST }} \
-          "scp -i <(echo '${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }}') /home/patturning2/deployment/swdc-0.0.1-SNAPSHOT.jar patturning2@${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }}:/home/patturning2/server/Dark-Pattern-Detection-SWDeveloperContest/deployment/"
+          "scp -i <(echo '${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }}') /home/patturning2/deployment/server/build/libs/swdc-0.0.1-SNAPSHOT.jar patturning2@${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }}:/home/patturning2/deployement/"
 
       - name: Deploy to Internal Server through Bastion Host
         if: success()
@@ -59,7 +59,7 @@ jobs:
               sudo docker stop swdc-container || true
               sudo docker rm swdc-container || true
 
-              cd /home/patturning2/server/Dark-Pattern-Detection-SWDeveloperContest/deployment
+              cd /home/patturning2/deployement
               sudo docker build -t swdc-app .
               sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt swdc-app
 
