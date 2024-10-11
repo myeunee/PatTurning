@@ -32,29 +32,16 @@ jobs:
           cd server
           ./gradlew build -x test
 
-      - name: Deliver jar File to Bastion Host
-        if: success()
-        uses: appleboy/scp-action@v0.1.5
-        with:
-          host: ${{ secrets.GCP_SERVER_VM_HOST }} 
-          username: ${{ secrets.GCP_SERVER_VM_USER }} 
-          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
-          port: 22
-          source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
-          target: /home/patturning2/deployment/
-
       - name: Deliver jar File to Internal Server through Bastion Host
         if: success()
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} 
           username: ${{ secrets.GCP_SERVER_VM_USER }} 
           key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
-          port: 22
           proxy_host: ${{ secrets.GCP_SERVER_VM_HOST }} 
           proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
           proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
-          proxy_port: 22
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
           target: /home/patturning2/deployment/
 
