@@ -7,7 +7,7 @@ from airflow import DAG
 from airflow.decorators import task
 from dotenv import load_dotenv
 import os
-
+ 
 load_dotenv()
 user_home=os.getenv('USER_HOME')
 
