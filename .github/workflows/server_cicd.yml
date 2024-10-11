@@ -55,7 +55,7 @@ jobs:
           proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
           proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
           proxy_port: 22
-          source: /home/patturning2/deployment/server/build/libs/swdc-0.0.1-SNAPSHOT.jar
+          source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
           target: /home/patturning2/deployment/
 
 
