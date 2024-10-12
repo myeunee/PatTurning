@@ -9,12 +9,16 @@ from mq_producer_template import RabbitMQProducer
 
 username = os.getenv('RABBITMQ_USERNAME')
 password = os.getenv('RABBITMQ_PASSWORD')
-host = os.getenv('RABBITMQ_HOSTNAME')
+hostname = os.getenv('RABBITMQ_HOSTNAME')
 port = os.getenv('RABBITMQ_PORT')
 
 def crawl():
     """
     return type: list[dict] or dict
+    e.g. [{"category_name": cn1, "product_id": pid1, "price": p1},
+          {"category_name": cn2, "product_id": pid2, "price": p2},
+          ...]
+    e.g. {"category_name": cn, "product_id": pid, "price": p}
     """
     #              #
     # 크롤링 코드 작성 #
@@ -23,5 +27,5 @@ def crawl():
     
 if __name__ == "__main__":
     queue = f"user_defined_queue"
-    producer = RabbitMQProducer(host, port, username, password, queue)
+    producer = RabbitMQProducer(hostname, port, username, password, queue)
     producer.produce(data) # data type: list[dict] or dict

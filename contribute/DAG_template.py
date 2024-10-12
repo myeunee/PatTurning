@@ -46,7 +46,7 @@ with DAG(
 
     run_consumer_task = BashOperator.partial(
         task_id="run-consumer-task",
-        bash_command=f"python3 {user_home}/{platform}_consumer.py {{ params.consumer }}",
+        bash_command=f"python3 {user_home}/{platform}_consumer.py " + "{{ params.consumer }}",
     ).expand(params=generate_queue_values())
 
     # 카테고리가 여러 개라면 아래에 해당하는 카테고리 값들을 삽입합니다.
