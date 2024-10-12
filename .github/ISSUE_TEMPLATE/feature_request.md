@@ -17,6 +17,8 @@ assignees: eulneul, g-hyeong, HyejiYu, Imsyp, myeunee
 
 ## Desired Behaviour
 [NOTE]: # ( Tell us how the new feature should work. Be specific. )
+- [ ] desired behaviour 1
+- [ ] desired behaviour 2
 
 ## Additional context
 [TIP]:  # ( Why does this feature matter to you? What unique circumstances do you have? )
