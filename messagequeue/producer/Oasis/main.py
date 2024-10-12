@@ -12,13 +12,13 @@ async def crawl():
     process = subprocess.Popen(
         ["python", "crawl_oasis.py"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,  # stderr도 stdout으로 리다이렉트
+        stderr=subprocess.STDOUT,  # stderr -> stdout *Redirect*
         text=True,
         bufsize=1,
         universal_newlines=True,
     )
 
-    # 로그를 실시간으로 출력하기 위한 비동기 함수
+    # 로그 비동기 출력
     async def stream_Oasis_logs():
         while True:
             line = process.stdout.readline()

@@ -4,6 +4,7 @@ import json
 
 
 class RabbitMQProducer:
+    # 클래스 정의 시 RabbitMQ 인증 정보 가져오기
     def __init__(self, host, port, username, password, queue):
         self.host = host
         self.port = port
@@ -12,8 +13,10 @@ class RabbitMQProducer:
         self.queue = queue
 
     def produce(self, data):
+        # RabbitMQ 인증 정보
         credentials = pika.PlainCredentials(self.username, self.password)
 
+        # 연결 설정
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.host,
