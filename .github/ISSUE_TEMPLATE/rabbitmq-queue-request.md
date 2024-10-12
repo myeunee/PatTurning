@@ -14,8 +14,8 @@ assignees: g-hyeong, HyejiYu
 [NOTE]: # ( Please provide a brief description of the new crawling site. )
 [TIP]: # ( Tell us what you are crawling(what site, category, or product are you crawling...). )
 
-## Desired Queue
-[NOTE]: # (Tell us the name of the queue you want to create. )
+## Desired queue and responding environment variable name
+[NOTE]: # (Tell us the name of the queue you want to create and the environment variable name responding to the queue. )
 
 ## Additional context
 [NOTE]: # ( Why is it important to crawl this site? What unique circumstances do you have? )
