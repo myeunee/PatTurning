@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for this project
 title: "[Feature]"
 labels: enhancement
-assignees: g-hyeong, eulneul, HyejiYu, Imsyp, myeunee
+assignees: eulneul, g-hyeong, HyejiYu, Imsyp, myeunee
 
 ---
 
