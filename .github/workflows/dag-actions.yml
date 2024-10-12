@@ -36,12 +36,13 @@ jobs:
           GCE_IP: ${{ secrets.GCE_IP }}
           GCE_USER: ${{ secrets.GCE_USER }}
           GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
+          GCE_AIRFLOW_HOME: ${{ secrets.GCE_AIRFLOW_HOME }}
         run: |
           mkdir -p ~/.ssh
           echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa  # SSH 키 권한 설정
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/HomePlus_dag.py
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/Oasis_dag.py
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/requirements/modules.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/requirements/modules.py
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/requirements/packages.py ${GCE_USER}@${GCE_IP}:/home/patturning2/airflow/dags/requirements/packages.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/HomePlus_dag.py ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/HomePlus_dag.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/Oasis_dag.py ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/Oasis_dag.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/requirements/modules.py ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/requirements/modules.py
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./airflow/requirements/packages.py ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/requirements/packages.py
 
