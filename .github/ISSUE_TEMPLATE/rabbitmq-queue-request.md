@@ -1,7 +1,6 @@
 ---
 name: RabbitMQ Queue request
-about: Suggest creating a custom queue following the development of new site crawling
-  code
+about: Suggest creating a queue following the new site crawling
 title: "[Queue Request] XXXXX"
 labels: Request
 assignees: g-hyeong, HyejiYu
