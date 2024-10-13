@@ -1,7 +1,6 @@
 const darkUrl = "YOUR_DARK_PATTERN_API";
 const priceUrl = "YOUR_PRICE_API";
 
-
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {
@@ -321,13 +320,38 @@ async function fetchCategoryAndProductId() {
 }
 
 
-// 2. MutationObserver를 사용하여 요소가 로드될 때까지 기다림
+// 웹페이지에 Chart.js 스크립트와 renderPriceChart.js 스크립트를 삽입
+function injectChartJsAndRenderScript() {
+    // 1. Chart.js 스크립트 삽입
+    const chartScript = document.createElement('script');
+    chartScript.src = chrome.runtime.getURL('scripts/chart.umd.js');
+    chartScript.onload = () => {
+        console.log('Chart.js injected into page successfully');
+        
+        // 2. 차트 렌더링 스크립트 삽입 (외부 파일)
+        const renderScript = document.createElement('script');
+        renderScript.src = chrome.runtime.getURL('scripts/renderPriceChart.js');  // 외부 파일로 삽입
+        renderScript.onload = () => {
+            console.log('RenderPriceChart.js injected successfully');
+        };
+        renderScript.onerror = (e) => {
+            console.error('Failed to inject renderPriceChart.js into page', e);
+        };
+        document.head.appendChild(renderScript);  // 웹페이지에 차트 렌더링 스크립트 삽입
+    };
+    chartScript.onerror = (e) => {
+        console.error('Failed to inject Chart.js into page', e);
+    };
+    (document.head || document.documentElement).appendChild(chartScript);  // 웹페이지에 Chart.js 삽입
+}
+
+// MutationObserver를 사용하여 요소가 로드될 때까지 기다림
 function waitForCategoryAndProductId() {
     const observer = new MutationObserver(async (mutations, obs) => {
         const productInfo = await fetchCategoryAndProductId();
-        
+
         if (productInfo) {
-            console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓')
+            console.log('〓〓〓〓〓 상품 정보 〓〓〓〓〓');
             console.log('platform:', productInfo.platform);
             console.log('categoryName:', productInfo.categoryName);
             console.log('productId:', productInfo.productId);
@@ -338,232 +362,35 @@ function waitForCategoryAndProductId() {
             // 백그라운드 스크립트에 가격 정보를 요청하는 메시지 전송
             chrome.runtime.sendMessage(
                 { action: 'fetchPriceInfo', payload: productInfo },
-                (response) => {
+                async (response) => {
 
                     if (chrome.runtime.lastError) {
                         console.error('Runtime error:', chrome.runtime.lastError.message);
                         return;
                     }
 
-                    console.log('[waitForCategoryAndProductId] response: ', response);
-                    
+                    console.log('[waitForCategoryAndProductId] response: ', response); // 뜨고 있음
+
                     if (response && response.status === 'success') {
-                        console.log('Price Info received:', response.data);
+                        console.log('[waitForCategoryAndProductId] 가격 정보 받음:', response.data);
 
-                        // 받은 데이터를 이용하여 그래프를 그리는 함수 호출
-                        renderPriceChart(response.data[0], document.body); // response.data[0]으로 첫 번째 배열 요소 전달
-
+                        // 웹페이지에 데이터를 전달하여 차트 렌더링 요청
+                        window.postMessage({ type: 'RENDER_CHART', data: response.data[0] }, '*');
                     } else {
                         console.error('[waitForCategoryAndProductId] 가격 정보 못 받음:', response.message);
-
                     }
                 }
             );
         }
     });
-
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// 페이지 로드 시 두 함수(제품 정보, 가격 정보 받아오기)를 모두 호출
+// 페이지 로드 시 실행
 window.addEventListener('load', function() {
-    console.log('Page fully loaded');
-
-    // 제품 정보 및 가격 정보 초기화
-    waitForCategoryAndProductId();
+    injectChartJsAndRenderScript();  // Chart.js와 renderPriceChart.js를 삽입
 });
 
-
-function renderPriceChart(data, target) {
-    const prices = data.prices;
-
-    if (!prices || prices.length === 0) {
-        console.error('No prices data available');
-        return;
-    }
-
-    const labels = prices.map(item => Object.keys(item)[0]);  // 날짜
-    const values = prices.map(item => Object.values(item)[0]); // 가격
-    
-    
-    // 현재 가격과 평균 가격 비교
-    const latestPrice = values[values.length - 1];
-    const avgPrice = data.avg;
-    let priceDifferenceText = '';
-
-    if (latestPrice > avgPrice) {
-        const percentage = ((latestPrice - avgPrice) / avgPrice) * 100;
-        priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 비쌉니다.`;
-    } else if (latestPrice < avgPrice) {
-        const percentage = ((avgPrice - latestPrice) / avgPrice) * 100;
-        priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 쌉니다.`;
-    } else {
-        priceDifferenceText = `현재 가격이 <span style="color: #0000ff;">평균과 동일</span>합니다.`;
-    }
-
-    // 기존에 존재하는 priceHistoryBox가 있다면 제거
-    const existingBox = document.querySelector('.price-history-box');
-    if (existingBox) {
-        existingBox.remove();
-    }
-
-    // 새로운 컨테이너를 만들어서 추가
-    const priceHistoryBox = document.createElement('div');
-    priceHistoryBox.className = 'price-history-box';
-    priceHistoryBox.style.position = 'fixed';
-    priceHistoryBox.style.right = '100px'; // 오른쪽에서
-    priceHistoryBox.style.top = '300px'; // 위에서
-    priceHistoryBox.style.border = '1px solid #ccc';
-    priceHistoryBox.style.background = 'white';
-    priceHistoryBox.style.padding = '10px';
-    priceHistoryBox.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-    priceHistoryBox.style.width = '400px';
-    priceHistoryBox.style.zIndex = '1000';
-
-    // X 버튼
-    const closeButton = document.createElement('button');
-    closeButton.innerHTML = '&times;'; // X 표시
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '5px';
-    closeButton.style.right = '10px';
-    closeButton.style.border = 'none';
-    closeButton.style.background = 'none';
-    closeButton.style.fontSize = '20px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.onclick = function() {
-        priceHistoryBox.remove();
-    };
-
-    // 박스에 X 버튼 추가
-    priceHistoryBox.appendChild(closeButton);
-
-    // 제목
-    const title = document.createElement('h3');
-    title.style.textAlign = 'center';
-    title.style.fontSize = '24px';
-    title.textContent = '💡 가격 변동 그래프 💡';
-    title.style.marginBottom = '8px';
-    title.style.fontFamily = 'Pretendard';
-
-    // 부제목
-    const subTitle = document.createElement('p');
-    subTitle.style.textAlign = 'center';
-    subTitle.style.color = '#808080';
-    subTitle.style.fontSize = '15px';
-    subTitle.style.marginBottom = '15px';
-    subTitle.textContent = '지금이 최적의 구매 타이밍인지 알아보세요!'; 
-    subTitle.style.fontFamily = 'Pretendard'; 
-
-    // 가격차
-    const priceDiffTextElement = document.createElement('h3');
-    priceDiffTextElement.style.textAlign = 'center';
-    priceDiffTextElement.style.fontSize = '18px';
-    priceDiffTextElement.style.marginBottom = '18px';
-    priceDiffTextElement.style.fontFamily = 'Pretendard';
-    priceDiffTextElement.innerHTML = priceDifferenceText;
-    priceHistoryBox.appendChild(title);
-    priceHistoryBox.appendChild(subTitle);
-    priceHistoryBox.appendChild(priceDiffTextElement);
-    
-
-    // 캔버스 엘리먼트를 만들고, 이를 그래프 컨테이너에 추가
-    const canvas = document.createElement('canvas');
-    canvas.width = 400;  // 실제 그래픽을 그릴 넓이
-    canvas.height = 150; // 실제 그래픽을 그릴 높이    
-    canvas.id = 'priceChart'; // 캔버스 ID 설정
-    priceHistoryBox.appendChild(canvas);
-
-    // 평균, 최저, 최고가 텍스트 포함 박스
-    const priceStatsBox = document.createElement('div');
-    priceStatsBox.style.marginTop = '10px';
-    priceStatsBox.style.padding = '10px';
-    priceStatsBox.style.border = '2px solid #808080';
-    priceStatsBox.style.background = '#f9f9f9';
-    
-
-    const priceStats = document.createElement('p');
-    priceStats.style.textAlign = 'center';
-    priceStats.style.fontFamily = 'Pretendard';
-    priceStats.style.fontSize = '13px';
-    priceStats.innerHTML = `
-        <p style="color: #000000;"> 🔥 평균가: ${data.avg} 원</p>
-        <p style="color: #0000ff;"> 🔥 최저가: ${data.min} 원</p>
-        <p style="color: #d2691e;"> 🔥 최대가: ${data.max} 원</p>
-    `;
-
-    priceHistoryBox.appendChild(canvas);
-    priceHistoryBox.appendChild(priceStats);
-    document.body.appendChild(priceHistoryBox);
-
-    // 직접 그래프 그리기
-    const ctx = canvas.getContext('2d');
-
-    // 그래프의 기본 설정
-    const padding = 40;
-    const graphWidth = canvas.width - padding * 2;
-    const graphHeight = canvas.height - padding * 2;
-
-    // Y축 범위 계산(가격이 동일한 경우 대비)
-    const maxValue = Math.max(...values);
-    const minValue = Math.min(...values);
-    const range = maxValue === minValue ? 1 : maxValue - minValue;
-    const yScale = graphHeight / range;
-    const xStep = graphWidth / (labels.length - 1);
-
-    // 데이터를 중앙에서 시작하도록 조정
-    const offsetY = (canvas.height - graphHeight) / 2;
-
-    // 데이터 라인 그리기
-    ctx.beginPath();
-    values.forEach((value, index) => {
-        const x = padding + index * xStep;
-        const y = offsetY + (maxValue - value) * yScale;  // Y 좌표를 중앙에 배치
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
-    });
-    ctx.strokeStyle = '#0000ff'; // 데이터 라인: 파란색
-    ctx.stroke();
-
-    // 데이터 포인트 그리기
-    values.forEach((value, index) => {
-        const x = padding + index * xStep;
-        const y = offsetY + (maxValue - value) * yScale;  // Y 좌표를 중앙에 배치
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#0000ff';
-        ctx.fill();
-    });
-
-    // X축 레이블 그리기
-    ctx.fillStyle = '#808080';
-    ctx.font = '10px Arial';    
-
-    // X축 선 그리기
-    ctx.beginPath();
-    ctx.moveTo(padding, canvas.height - padding);
-    ctx.lineTo(canvas.width - padding, canvas.height - padding);
-    ctx.strokeStyle = '#808080';
-    ctx.stroke();
-
-    // x축 레이블(날짜)
-    labels.forEach((label, index) => {
-        const x = padding + index * xStep;
-        const y = canvas.height - padding + 10; // 레이블을 좀 더 아래로 내림
-
-        // 날짜 형식 간소화
-        const simplifiedLabel = label.slice(5);  // "2024-08-17" -> "08-17"
-
-        // 레이블 그리기
-        ctx.save();  // 현재 상태 저장
-        ctx.translate(x, y);  // 텍스트 위치로 이동
-        ctx.fillText(simplifiedLabel, 0, 0);  // 회전된 상태에서 텍스트 그리기
-        ctx.restore();  // 원래 상태로 복원
-    
-    });
-}
 
 
 // 페이지가 로드될 때마다 다크패턴 탐지, 가격 정보 갱신
