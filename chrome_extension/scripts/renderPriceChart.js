@@ -24,6 +24,7 @@
 
                 // 새로운 div와 canvas 요소를 생성하여 추가
                 const container = document.createElement('div');
+                container.id = 'priceChartContainer';
                 container.style.width = '400px';
                 container.style.height = '400px';
                 container.style.position = 'absolute';  // 상단 오른쪽 배치를 위해 position을 absolute로 설정
@@ -50,27 +51,6 @@
                 // 박스에 X 버튼 추가
                 container.appendChild(closeButton);
 
-
-                // 가격 정보 받아오기    
-                const prices = data.prices;
-                const values = prices.map(item => Object.values(item)[0]); // 가격
-                
-                
-                // 현재 가격과 평균 가격 비교
-                const latestPrice = values[values.length - 1];
-                const avgPrice = data.avg;
-                let priceDifferenceText = '';
-
-                if (latestPrice > avgPrice) {
-                    const percentage = ((latestPrice - avgPrice) / avgPrice) * 100;
-                    priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 비쌉니다.`;
-                } else if (latestPrice < avgPrice) {
-                    const percentage = ((avgPrice - latestPrice) / avgPrice) * 100;
-                    priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 쌉니다.`;
-                } else {
-                    priceDifferenceText = `현재 가격이 <span style="color: #0000ff;">평균과 동일</span>합니다.`;
-                }
-
                 // 제목
                 const title = document.createElement('h3');
                 title.style.textAlign = 'center';
@@ -88,18 +68,17 @@
                 subTitle.textContent = '지금이 최적의 구매 타이밍인지 알아보세요!'; 
                 subTitle.style.fontFamily = 'Pretendard'; 
 
-                // 가격차
+                // 가격차 요소 생성 (초기에는 빈 값으로 설정)
                 const priceDiffTextElement = document.createElement('h3');
+                priceDiffTextElement.className = 'price-difference';
                 priceDiffTextElement.style.textAlign = 'center';
                 priceDiffTextElement.style.fontSize = '18px';
                 priceDiffTextElement.style.marginBottom = '18px';
                 priceDiffTextElement.style.fontFamily = 'Pretendard';
-                priceDiffTextElement.innerHTML = priceDifferenceText;
                 container.appendChild(title);
                 container.appendChild(subTitle);
                 container.appendChild(priceDiffTextElement);
-                
-                
+
                 canvas = document.createElement('canvas');
                 canvas.id = 'priceChart';  // <canvas>의 ID 설정
                 canvas.width = 400;
@@ -108,24 +87,8 @@
                 container.appendChild(canvas);
                 document.body.appendChild(container);  // body에 추가
 
-                // 통계 요소가 이미 존재하면 제거
-                const existingStats = document.querySelector('.price-stats');
-                if (existingStats) {
-                    existingStats.remove();  // 기존 통계 요소를 제거
-                }
-
-                // 통계
-                const priceStats = document.createElement('p');
-                priceStats.className = 'price-stats';  // 클래스 이름을 추가해 추후 제거할 때 쉽게 찾기
-                priceStats.style.textAlign = 'center';
-                priceStats.style.fontFamily = 'Pretendard';
-                priceStats.style.fontSize = '13px';
-                priceStats.innerHTML = `
-                    <p style="color: #000000;"> 🔥 평균가: ${data.avg} 원</p>
-                    <p style="color: #0000ff;"> 🔥 최저가: ${data.min} 원</p>
-                    <p style="color: #d2691e;"> 🔥 최대가: ${data.max} 원</p>
-                `;
-                container.appendChild(priceStats);
+                // 통계 요소 생성 (초기에는 빈 값으로 설정)
+                updatePriceStats(container, data);
 
                 // DOM에 추가된 후 resolve 호출하여 렌더링 가능
                 setTimeout(() => resolve(canvas), 100);  // 짧은 지연 후 resolve 호출
@@ -152,6 +115,9 @@
         // ensureCanvasElement가 canvas를 준비할 때까지 기다림
         const canvas = await ensureCanvasElement(data);
         console.log('[renderPriceChart] 캔버스 요소 찾음:', canvas);  // Canvas가 제대로 추가된 후 로그 출력
+
+        // 텍스트 요소 업데이트
+        updateTextElements(data);
 
         if (window.priceChartInstance) {
             window.priceChartInstance.destroy();
@@ -187,27 +153,27 @@
                 id: 'fillBetweenGraphAndAvg',
                 beforeDatasetsDraw(chart) {
                     const { ctx, chartArea: { top, bottom, left, right }, scales: { x, y } } = chart;
-    
+
                     ctx.save();
-    
+
                     const avgY = y.getPixelForValue(avgPrice);  // 평균값의 Y 좌표 계산
                     const meta = chart.getDatasetMeta(0);
                     const points = meta.data;
-    
+
                     ctx.beginPath();
                     ctx.moveTo(points[0].x, avgY);  // 시작점을 평균선에서 시작
-    
+
                     points.forEach((point, index) => {
                         const nextPoint = points[index + 1] || point;
-    
+
                         // 그래프 선이 평균선을 가로지를 때 교차 지점을 계산
                         if ((point.y < avgY && nextPoint.y > avgY) || (point.y > avgY && nextPoint.y < avgY)) {
                             const intersectionX = point.x + (nextPoint.x - point.x) * ((avgY - point.y) / (nextPoint.y - point.y));
-    
+
                             ctx.lineTo(point.x, point.y);  // 현재 포인트까지 채우기
                             ctx.lineTo(intersectionX, avgY);  // 교차 지점으로 채우기
                             ctx.closePath();
-    
+
                             // 색상 채우기
                             if (point.y < avgY) {
                                 ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';  // 파란색
@@ -215,34 +181,91 @@
                                 ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';  // 빨간색
                             }
                             ctx.fill();
-    
+
                             ctx.beginPath();  // 새 경로 시작
                             ctx.moveTo(intersectionX, avgY);
                         }
-    
+
                         // 현재 포인트와 다음 포인트에 대해 fill 처리
                         if (point.y < avgY) {
                             ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';  // 파란색 fill
                         } else {
                             ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';  // 빨간색 fill
                         }
-    
+
                         ctx.lineTo(point.x, point.y);
                         ctx.lineTo(nextPoint.x, nextPoint.y);
                     });
-    
+
                     // 마지막으로 평균선과 연결하여 영역을 닫고 fill
                     ctx.lineTo(points[points.length - 1].x, avgY);
                     ctx.closePath();
                     ctx.fill();
-    
+
                     ctx.restore();
                 }
             }]
         });
-    
 
     // 차트 렌더링 완료 로그 추가
     console.log('[renderPriceChart] 차트 렌더링 끝');
 }
+
+// 텍스트 요소 업데이트 함수
+function updateTextElements(data) {
+    const avgPrice = data.avg;
+    const minPrice = data.min;
+    const maxPrice = data.max;
+
+    // 현재 가격과 평균 가격 비교
+    const prices = data.prices;
+    const latestPrice = prices[prices.length - 1][Object.keys(prices[prices.length - 1])[0]];
+    let priceDifferenceText = '';
+
+    if (latestPrice > avgPrice) {
+        const percentage = ((latestPrice - avgPrice) / avgPrice) * 100;
+        priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 비쌉니다.`;
+    } else if (latestPrice < avgPrice) {
+        const percentage = ((avgPrice - latestPrice) / avgPrice) * 100;
+        priceDifferenceText = `현재 가격이 평균보다 <span style="color: #0000ff;">${percentage.toFixed(2)}%</span> 쌉니다.`;
+    } else {
+        priceDifferenceText = `현재 가격이 <span style="color: #0000ff;">평균과 동일</span>합니다.`;
+    }
+
+    // 가격차 텍스트 요소 업데이트
+    const priceDiffTextElement = document.querySelector('#priceChartContainer h3.price-difference');
+    if (priceDiffTextElement) {
+        priceDiffTextElement.innerHTML = priceDifferenceText;
+    }
+
+    // 평균, 최저, 최고가 업데이트
+    updatePriceStats(document.getElementById('priceChartContainer'), data);
+}
+
+// 통계 업데이트 함수
+function updatePriceStats(container, data) {
+    const avgPrice = data.avg;
+    const minPrice = data.min;
+    const maxPrice = data.max;
+
+    // 통계 요소가 이미 존재하면 제거
+    const existingStats = container.querySelector('.price-stats');
+    if (existingStats) {
+        existingStats.remove();  // 기존 통계 요소를 제거
+    }
+
+    // 통계 요소 생성
+    const priceStats = document.createElement('p');
+    priceStats.className = 'price-stats';
+    priceStats.style.textAlign = 'center';
+    priceStats.style.fontFamily = 'Pretendard';
+    priceStats.style.fontSize = '13px';
+    priceStats.innerHTML = `
+        <p style="color: #000000;"> 🔥 평균가: ${avgPrice} 원</p>
+        <p style="color: #0000ff;"> 🔥 최저가: ${minPrice} 원</p>
+        <p style="color: #d2691e;"> 🔥 최대가: ${maxPrice} 원</p>
+    `;
+    container.appendChild(priceStats);
+}
+
 })();
