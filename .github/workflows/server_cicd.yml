@@ -45,7 +45,7 @@ jobs:
           proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
           proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
-          target: /home/patturning2/deployment/
+          target: ${GCE_USER_HOME}/deployment/
 
       - name: Deploy to Internal Server through Bastion Host
         env:
@@ -66,6 +66,6 @@ jobs:
               sudo docker stop swdc-container || true
               sudo docker rm swdc-container || true
 
-              cd /home/patturning2/deployment
+              cd ${GCE_USER_HOME}/deployment
               sudo docker build -t swdc-app .
               sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt swdc-app
