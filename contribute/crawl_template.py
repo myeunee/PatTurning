@@ -7,14 +7,12 @@ mq_producer_template.py 파일에 RabbitMQProducer 클래스를 참고하시어
 import os
 from mq_producer_template import RabbitMQProducer
 
-# username = os.getenv('RABBITMQ_USERNAME', 'guest')  # RabbitMQ 사용자 이름 (기본값: guest)
-# password = os.getenv('RABBITMQ_PASSWORD', 'guest')  # RabbitMQ 비밀번호 (기본값: guest)
-username = "guest"
-password = "guest"
+username = os.getenv('RABBITMQ_USERNAME', 'guest')  # RabbitMQ 사용자 이름 (기본값: guest)
+password = os.getenv('RABBITMQ_PASSWORD', 'guest')  # RabbitMQ 비밀번호 (기본값: guest)
 hostname = os.getenv('RABBITMQ_HOSTNAME', 'localhost')  # RabbitMQ 호스트 이름 (기본값: localhost)
 port = os.getenv('RABBITMQ_PORT', '5672')          # RabbitMQ 포트 (기본값: 5672)
 vhost = os.getenv('RABBITMQ_VHOST', '/')        # RabbitMQ 가상 호스트 (기본값: /)
-queue = os.getenv('RABBITMQ_QUEUE', 'test_queue')  # 큐 이름 (기본값: test_queue)
+queue = os.getenv('RABBITMQ_QUEUE', 'test.queue')  # 큐 이름 (기본값: test_queue)
 
 def crawl():
     """
