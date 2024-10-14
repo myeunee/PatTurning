@@ -8,7 +8,7 @@ app = FastAPI()
 
 @app.post("/")
 async def crawl():
-    # Scrapy 크롤링 프로세스 시작
+    # 크롤링 프로세스 시작
     process = subprocess.Popen(
         ["python", "crawl_oasis.py"],
         stdout=subprocess.PIPE,
