@@ -273,9 +273,9 @@ function getGmarketProductId(url) {
     return productIdMatch ? productIdMatch[1] : null;
 }
 
-// Posty의 URL에서 productId 추출
-function getPostyProductId(url) {
-    const productIdMatch = url.match(/products\/(\d+)/);
+// Oasis의 URL에서 productId 추출
+function getOasisProductId(url) {
+    const productIdMatch = url.match(/\/(\d+)-/);
     return productIdMatch ? productIdMatch[1] : null;
 }
 
@@ -296,9 +296,9 @@ async function fetchCategoryAndProductId() {
         platform = 'Gmarket';
         categoryName = getGmarketCategoryName();
         productId = getGmarketProductId(url);
-    } else if (url.includes('posty.kr')) {
-        platform = 'Posty';
-        productId = getPostyProductId(url);
+    } else if (url.includes('oasis.co.kr')) {
+        platform = 'Oasis';
+        productId = getOasisProductId(url);
     } else {
         platform = 'Unknown';
     }
@@ -310,7 +310,7 @@ async function fetchCategoryAndProductId() {
         return null;
     }
 
-    if (!categoryName && platform !== 'Posty') {  // Posty는 categoryName이 없을 수 있음
+    if (!categoryName && platform !== 'Oasis') {  // Oasis는 categoryName이 없음
         console.error('Category name not found via XPath');
         return null;
     }

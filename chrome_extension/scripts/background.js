@@ -1,7 +1,6 @@
 const darkUrl = "YOUR_DARK_PATTERN_API";
 const priceUrl = "YOUR_PRICE_API";
 
-
 // 1. 메시지 리스너
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('[백그라운드] Received request: ', request);
@@ -53,7 +52,7 @@ async function fetchDataFromServer(action, payload) {
         const { platform, productId, categoryName = null } = payload;
 
         let url;
-        if (platform === 'Posty') {
+        if (platform === 'Oasis') {
             url = `${priceUrl}/price-info/${platform}/${productId}`;
         } else {
             url = `${priceUrl}/price-info/${platform}/${productId}/${categoryName || ''}`;
@@ -87,8 +86,8 @@ async function fetchDataFromServer(action, payload) {
 // 페이지 로딩이 될 때마다 메시지를 보내 다크패턴 탐지 및 가격 정보 요청
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete') {
-        // homeplus, Gmarket, Posty 등 여러 도메인에서 메시지 전송
-        if (tab.url.includes('homeplus.co.kr') || tab.url.includes('gmarket.co.kr') || tab.url.includes('posty.kr')) {
+        // homeplus, Gmarket, Oasis 등 여러 도메인에서 메시지 전송
+        if (tab.url.includes('homeplus.co.kr') || tab.url.includes('gmarket.co.kr') || tab.url.includes('oasis.co.kr')) {
             chrome.storage.local.get("darkPatternDetection", (result) => {
                 if (result.darkPatternDetection) {
                     // 다크 패턴 탐지 활성화
