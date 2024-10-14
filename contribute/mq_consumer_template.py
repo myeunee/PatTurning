@@ -12,12 +12,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 platform = "PLATFORM_NAME"
 
 load_dotenv()
-username = os.getenv('RABBITMQ_USERNAME')  # RabbitMQ 사용자 이름
-password = os.getenv('RABBITMQ_PASSWORD')  # RabbitMQ 비밀번호
-hostname = os.getenv('RABBITMQ_HOSTNAME')  # RabbitMQ 호스트 이름
-port = os.getenv('RABBITMQ_PORT')          # RabbitMQ 포트
-vhost = os.getenv('RABBITMQ_VHOST')        # RabbitMQ 가상 호스트
-mount_home = os.getenv('MOUNT_HOME')       # 파일 저장 경로
+username = os.getenv('RABBITMQ_USERNAME', 'guest')  # RabbitMQ 사용자 이름 (기본값: guest)
+password = os.getenv('RABBITMQ_PASSWORD', 'guest'   )  # RabbitMQ 비밀번호 (기본값: guest)
+hostname = os.getenv('RABBITMQ_HOSTNAME', 'localhost')  # RabbitMQ 호스트 이름 (기본값: localhost)
+port = os.getenv('RABBITMQ_PORT', '5672')          # RabbitMQ 포트 (기본값: 5672)
+vhost = os.getenv('RABBITMQ_VHOST', '/')        # RabbitMQ 가상 호스트 (기본값: /)
+mount_home = os.getenv('MOUNT_HOME', 'output')       # 파일 저장 경로 (기본값: output)
+
+# mount_home 디렉토리가 존재하지 않은 경우 생성
+if not os.path.exists(mount_home):
+    os.makedirs(mount_home)
+    logging.info(f"Directory {mount_home} created")
 
 # 큐 이름을 명령행 인자로부터 가져옴
 queue = sys.argv[1]
