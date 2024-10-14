@@ -26,7 +26,7 @@
                 const container = document.createElement('div');
                 container.id = 'priceChartContainer';
                 container.style.width = '400px';
-                container.style.height = '400px';
+                container.style.height = '450px';
                 container.style.position = 'absolute';  // 상단 오른쪽 배치를 위해 position을 absolute로 설정
                 container.style.top = '300px';  // 상단에서 떨어지도록
                 container.style.right = '100px';  // 오른쪽에서 떨어지도록
@@ -108,13 +108,29 @@
             return;
         }
 
-        const labels = prices.map(item => Object.keys(item)[0].slice(5));  // 날짜 형식에서 "2024-" 부분을 제외하고 표시
+        // 날짜와 시간을 분리하여 라벨 생성
+        const labels = prices.map(item => Object.keys(item)[0].split(',')[0]); // "2024-09-24" 형식의 날짜만 추출
+        console.log('************** 라벨:', labels);
+        const uniqueLabels = [...new Set(labels)];  // 중복 제거해서 날짜만 남김
+        console.log('************** 라벨:', uniqueLabels);
+        
         const values = prices.map(item => Object.values(item)[0]); // 가격
         const avgPrice = data.avg; // 평균가
 
+
+        // 같은 날짜 내에서 시간 구분이 필요하면 그 날짜에 작은 그리드를 추가
+        const timeSegments = prices.reduce((acc, item) => {
+            const [date, time] = Object.keys(item)[0].split(',');
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(time);  // 해당 날짜에 시간을 저장
+            return acc;
+        }, {});
+
         // ensureCanvasElement가 canvas를 준비할 때까지 기다림
         const canvas = await ensureCanvasElement(data);
-        console.log('[renderPriceChart] 캔버스 요소 찾음:', canvas);  // Canvas가 제대로 추가된 후 로그 출력
+        console.log('[renderPriceChart] 캔버스 요소 찾음');  // Canvas가 제대로 추가된 후 로그 출력
 
         // 텍스트 요소 업데이트
         updateTextElements(data);
@@ -122,11 +138,16 @@
         if (window.priceChartInstance) {
             window.priceChartInstance.destroy();
         }
-
         window.priceChartInstance = new Chart(canvas, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: prices.map((item, index) => {
+                    const date = Object.keys(item)[0].split(',')[0];
+                    const prevDate = prices[index - 1] ? Object.keys(prices[index - 1])[0].split(',')[0] : null;
+        
+                    // 이전 데이터와 날짜가 같으면 라벨을 비워둠 (시간 생략)
+                    return date === prevDate ? '' : date;
+                }),
                 datasets: [{
                     data: values,
                     borderColor: '#0000ff',  // 기본 선 색상
@@ -135,19 +156,53 @@
                     pointRadius: 3,
                     pointHoverRadius: 5,
                     fill: false,  // 기본 fill을 비활성화
-            }]
-        },
+                }]
+            },
             options: {
                 scales: {
-                    x: { title: { display: true, text: '날짜' } },
-                    y: { title: { display: true, text: '가격' }, beginAtZero: false }
+                    x: {
+                        type: 'category',
+                        grid: {
+                            display: true,
+                            drawOnChartArea: true,
+                            color: '#000',  // 기본 그리드는 날짜별로 표시
+                            lineWidth: 1,   // 큰 그리드 선
+                        },
+                        ticks: {
+                            autoSkip: false,  // 모든 라벨 표시 (빈 라벨은 생략)
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '가격 (원)',
+                        },
+                        grid: {
+                            drawOnChartArea: true,
+                            drawTicks: true,
+                        },
+                    }
                 },
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // 툴팁에서 시간까지 표시
+                            label: function(context) {
+                                const label = context.label;
+                                const dataPoint = prices[context.dataIndex];
+                                const time = Object.keys(dataPoint)[0].split(',')[1];  // 시간 추출
+                                const value = context.raw;
+                                return `시간: ${time}, 가격: ${value} 원`;
+                            }
+                        }
+                    },
                     legend: {
-                        display:false // 라벨 비활성화
-                    }}
+                        display: false  // 라벨 비활성화
+                    }
+                }
             },
             plugins: [{
                 id: 'fillBetweenGraphAndAvg',
@@ -176,9 +231,9 @@
 
                             // 색상 채우기
                             if (point.y < avgY) {
-                                ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';  // 파란색
+                                ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';  // 파란색
                             } else {
-                                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';  // 빨간색
+                                ctx.fillStyle = 'rgba(242, 69, 95, 0.3)';  // 빨간색
                             }
                             ctx.fill();
 
@@ -204,7 +259,48 @@
 
                     ctx.restore();
                 }
-            }]
+            },
+        {
+            id: 'adjustDataSpacingForSameDate',
+            beforeDatasetsDraw: function(chart) {
+                const xScale = chart.scales.x;
+                const datasetMeta = chart.getDatasetMeta(0);
+                
+                // 이전 날짜와 비교하면서 같은 날짜일 경우 작은 간격으로 배치
+                let sameDateGroupStartIndex = null;
+                let uniqueDates = [];
+                prices.forEach((item, index) => {
+                    const [date] = Object.keys(item)[0].split(',');
+                    const nextItem = prices[index + 1] ? Object.keys(prices[index + 1])[0].split(',') : null;
+    
+                    // 같은 날짜가 시작되는 지점 기록
+                    if (!uniqueDates.includes(date)) {
+                        uniqueDates.push(date);
+                    }
+    
+                    // 같은 날짜가 끝나면 간격을 좁게 설정
+                    if (sameDateGroupStartIndex === null && nextItem && nextItem[0] === date) {
+                        sameDateGroupStartIndex = index;
+                    }
+    
+                    if (sameDateGroupStartIndex !== null && (!nextItem || nextItem[0] !== date)) {
+                        const startX = xScale.getPixelForValue(uniqueDates.indexOf(date));
+                        const endX = xScale.getPixelForValue(uniqueDates.indexOf(date) + 1);
+    
+                        // 같은 날짜 그룹 안에서 작은 간격으로 데이터 포인트 배치
+                        const smallSpacing = (endX - startX) / (index - sameDateGroupStartIndex + 2);  // 좁은 간격 적용
+    
+                        for (let i = sameDateGroupStartIndex; i <= index; i++) {
+                            const point = datasetMeta.data[i];
+                            point.x = startX + (i - sameDateGroupStartIndex) * smallSpacing;
+                        }
+    
+                        // 그룹 초기화
+                        sameDateGroupStartIndex = null;
+                    }
+                });
+            }
+        }]
         });
 
     // 차트 렌더링 완료 로그 추가
@@ -214,8 +310,6 @@
 // 텍스트 요소 업데이트 함수
 function updateTextElements(data) {
     const avgPrice = data.avg;
-    const minPrice = data.min;
-    const maxPrice = data.max;
 
     // 현재 가격과 평균 가격 비교
     const prices = data.prices;

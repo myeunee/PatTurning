@@ -1,3 +1,5 @@
+const priceUrl = "YOUR_PRICE_API";
+
 function sendMessage(action, successMessage, failureMessage) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length === 0) {
@@ -94,4 +96,34 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+});
+
+
+
+// 다크패턴 전송 기능 핸들러
+document.getElementById("sendButton").addEventListener("click", async () => {
+    const userInput = document.getElementById("userInput").value;
+    
+    if (userInput) {
+        try {
+            const response = await fetch(`${priceUrl}/save-text`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: userInput }),
+            });
+            
+            if (response.ok) {
+                alert('다크패턴 접수가 완료되었습니다.');  // 전송 성공 알림
+            } else {
+                alert('다크패턴 접수에 실패했습니다.');  // 전송 실패 알림
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);  // 에러 발생 시 알림
+            console.error('Error:', error);
+        }
+    } else {
+        alert('다크패턴으로 추정되는 텍스트를 입력하세요!');
+    }
 });

@@ -20,6 +20,7 @@
             </label>
         </div>
         <div id="status3"></div>
+        <br/>
         <div id="label-filters" style="display: none;">
             <label>
                 <input type="checkbox" id="label1" class="filter-checkbox" value="1"> 거짓 정보이거나 유인 판매일 수 있어요.<br/>
@@ -35,6 +36,15 @@
             </label>
         </div>
     </div>
+
+    <br/>
+    <!-- 다크패턴 입력과 전송 버튼 -->
+    <div>
+        <input type="text" id="userInput" placeholder="다크패턴 리포트하기!" />
+        <button id="sendButton">전송</button>
+        
+    </div>
+
     <ul></ul>
     <script src="../scripts/popup-handler.js" type="module"></script>   
     <script src="../scripts/content-script.js" type="module"></script>   
