@@ -1,6 +1,6 @@
 /**
  *
- *  Product_price_db와 상호작용하는 service
+ *  Filestore에 mount된 filesystem과 상호작용하는 service
  *
  */
 
