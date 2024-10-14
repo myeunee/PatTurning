@@ -21,16 +21,8 @@ class RabbitMQProducer:
         self.password = password
         self.queue = queue
 
-    def produce(self, data):
-        """
-        데이터를 RabbitMQ 큐에 전송하는 함수.
-        
-        :param data: 전송할 데이터. 딕셔너리 또는 딕셔너리의 리스트 형태여야 함.
-        :return: None
-        """
         # RabbitMQ 서버에 연결하기 위한 인증 정보 설정
         credentials = pika.PlainCredentials(self.username, self.password)
-
         # RabbitMQ 서버에 연결 설정
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
@@ -40,8 +32,17 @@ class RabbitMQProducer:
                 credentials=credentials,
             )
         )
-        channel = self.connection.channel()  # 채널 생성
-        channel.queue_declare(queue=self.queue, durable=True)
+
+        self.channel = self.connection.channel()  # 채널 생성
+        self.channel.queue_declare(queue=self.queue, durable=True)
+
+    def produce(self, data):
+        """
+        데이터를 RabbitMQ 큐에 전송하는 함수.
+        
+        :param data: 전송할 데이터. 딕셔너리 또는 딕셔너리의 리스트 형태여야 함.
+        :return: None
+        """
 
         # 데이터가 리스트 형태인지 확인
         if isinstance(data, list):
@@ -52,7 +53,7 @@ class RabbitMQProducer:
                     json_message = json.dumps(item).encode("utf-8")
                     try:
                         # 메시지를 큐에 전송
-                        channel.basic_publish(
+                        self.channel.basic_publish(
                             exchange="",
                             routing_key=self.queue,
                             body=json_message,
@@ -68,7 +69,7 @@ class RabbitMQProducer:
             json_message = json.dumps(data).encode("utf-8")
             try:
                 # 메시지를 큐에 전송
-                channel.basic_publish(
+                self.channel.basic_publish(
                     exchange="",
                     routing_key=self.queue,
                     body=json_message,

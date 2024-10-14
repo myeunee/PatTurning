@@ -119,7 +119,7 @@ def callback(ch, method, properties, body):
     else:
         # 카테고리 이름이 없는 경우 기본 경로에 파일 저장
         with open(f"{mount_home}/{platform}/{product_id}.txt", "a") as f:
-            f.write(f"{current_date},{now_hour}:00,{price}\n")
+            f.write(f"{current_date},{now_hour}:00, \t {platform}: {product_id}: {price}\n")
     
     # 10000번째 메시지마다 로그 기록
     if cnt % 10000 == 0:
