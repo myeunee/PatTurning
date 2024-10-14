@@ -11,6 +11,7 @@ username = os.getenv('RABBITMQ_USERNAME')
 password = os.getenv('RABBITMQ_PASSWORD')
 hostname = os.getenv('RABBITMQ_HOSTNAME')
 port = os.getenv('RABBITMQ_PORT')
+queue = os.getenv('RABBITMQ_QUEUE', 'test_queue')
 
 def crawl():
     """
@@ -20,12 +21,18 @@ def crawl():
           ...]
     e.g. {"category_name": cn, "product_id": pid, "price": p}
     """
+    data = {"category_name": "cn", "product_id": "pid", "price": "p"}
     #              #
     # 크롤링 코드 작성 #
     #              #
     return data
     
 if __name__ == "__main__":
-    queue = f"user_defined_queue"
-    producer = RabbitMQProducer(hostname, port, username, password, queue)
-    producer.produce(data) # data type: list[dict] or dict
+    # 데이터 수집
+    result = crawl()
+    # RabbitMQ Producer 생성
+    mq_producer = RabbitMQProducer(hostname, port, username, password, queue)
+    # RabbitMQ producer에 데이터 전송
+    mq_producer.produce(result)
+    # RabbitMQ 연결 종료
+    mq_producer.close()
