@@ -10,8 +10,6 @@ import com.swdc.server.domain.storage.Price;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -34,9 +32,6 @@ public class PriceService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceService.class);
     private static final String BASE_PATH = "/mnt/patturning";
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     /**
      *
@@ -92,11 +87,14 @@ public class PriceService {
      *  platform의 product_id에 해당하는 item의 가격 정보 반환
      *  (존재하는 category_name 모두 전수탐색)
      *
+     *  가격이 변경되는 시점 & 하루가 바뀌는 시점의 가격 정보만 가져옴
+     *
      */
     public Price getProductDetailsWithoutCategory(String platform, String product_id) {
         Path basePath = Paths.get(BASE_PATH).resolve(platform);
 
         List<Map<String, Integer>> allPrices = new ArrayList<>();
+
 
         try {
             Files.walk(basePath)
@@ -104,6 +102,7 @@ public class PriceService {
                     .filter(path -> path.getFileName().toString().equals(product_id + ".txt"))
                     .forEach(filePath -> {
                         String previousLine = null;
+                        String previousDate = null;
 
                         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
                             String currentLine;
@@ -112,25 +111,27 @@ public class PriceService {
                                 String[] parts = currentLine.split(",");
                                 String dateTime = parts[0] + "," + parts[1];
                                 int currentPrice = Integer.parseInt(parts[2]);
+                                String currentDate = parts[0];
 
-                                if (previousLine != null) {
-                                    String[] prevParts = previousLine.split(",");
-                                    int previousPrice = Integer.parseInt(prevParts[2]);
-
-                                    if (previousPrice != currentPrice) {
-                                        allPrices.add(Map.of(dateTime, currentPrice));
-                                    }
-                                } else {
+                                // 가격이 변경된 경우 추가
+                                if (previousLine == null || !previousLine.split(",")[2].equals(parts[2])) {
                                     allPrices.add(Map.of(dateTime, currentPrice));
                                 }
+
+                                // 날짜가 바뀌는 시점 (00:00)에 추가
+                                if (previousDate != null && !currentDate.equals(previousDate) && parts[1].equals("00:00")) {
+                                    allPrices.add(Map.of(dateTime, currentPrice));
+                                }
+
                                 previousLine = currentLine;
+                                previousDate = currentDate;
                             }
                         } catch (IOException e) {
-                            System.err.println("Error reading file: " + filePath);
+                            System.err.println("Error reading file: " + filePath + ". Error: " + e.getMessage());
                         }
                     });
         } catch (IOException e) {
-            System.err.println("Error traversing directories: " + basePath);
+            System.err.println("Error traversing directories: " + basePath + ". Error: " + e.getMessage());
         }
 
         Price priceInfo = Price.builder()
