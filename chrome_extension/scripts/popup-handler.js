@@ -11,7 +11,7 @@ function sendMessage(action, successMessage, failureMessage) {
         chrome.tabs.sendMessage(tabs[0].id, { action }, (response) => {
             if (chrome.runtime.lastError) {
                 console.error('Runtime error:', chrome.runtime.lastError.message);
-                updateStatus("다크 패턴 탐지 OFF");              
+                updateStatus("다크 패턴 탐지 스위치 OFF");              
                 return;
             }
 
@@ -24,7 +24,7 @@ function sendMessage(action, successMessage, failureMessage) {
                     updateStatus(failureMessage);
                 }
             } else {
-                updateStatus("다크 패턴 탐지 ON");   
+                updateStatus("다크 패턴 탐지 스위치 ON");   
             }
         });
     });
@@ -48,12 +48,12 @@ switchElement.addEventListener('change', (event) => {
     if (event.target.checked) {
         // detectDarkPatterns 활성화
         chrome.storage.local.set({ darkPatternDetection: true }, () => {
-            sendMessage("detectDarkPatterns", "다크 패턴이 감지되었습니다.", "다크 패턴이 감지되지 않았습니다.");
+            sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴이 감지되지 않았습니다.");
         });
     } else {
         // releaseDarkPatterns 비활성화
         chrome.storage.local.set({ darkPatternDetection: false }, () => {
-            sendMessage("releaseDarkPatterns", "다크 패턴이 해제되었습니다.", "다크 패턴을 해제할 수 없습니다.");
+            sendMessage("releaseDarkPatterns", "다크 패턴 탐지 스위치 OFF", "다크 패턴을 해제할 수 없습니다.");
         });
     }
 });
