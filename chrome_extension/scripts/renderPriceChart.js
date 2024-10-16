@@ -231,9 +231,9 @@
 
                             // 색상 채우기
                             if (point.y < avgY) {
-                                ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';  // 파란색
-                            } else {
                                 ctx.fillStyle = 'rgba(242, 69, 95, 0.3)';  // 빨간색
+                            } else {
+                                ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';  // 파란색
                             }
                             ctx.fill();
 
@@ -243,9 +243,9 @@
 
                         // 현재 포인트와 다음 포인트에 대해 fill 처리
                         if (point.y < avgY) {
-                            ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';  // 파란색 fill
+                            ctx.fillStyle = 'rgba(242, 69, 95, 0.3)';  // 빨간색
                         } else {
-                            ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';  // 빨간색 fill
+                            ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';  // 파란색
                         }
 
                         ctx.lineTo(point.x, point.y);
