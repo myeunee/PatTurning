@@ -1,6 +1,7 @@
 const darkUrl = "YOUR_DARK_PATTERN_API";
 const priceUrl = "YOUR_PRICE_API";
 
+
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {
@@ -245,7 +246,15 @@ function getHomePlusCategoryName() {
         null
     ).singleNodeValue;
 
-    return categoryElement ? categoryElement.textContent.trim() : null;
+    let categoryName = categoryElement ? categoryElement.textContent.trim() : null;
+
+    // CategoryName에 '/'가 있으면 '_'로 교체
+    if (categoryName) {
+        categoryName = categoryName.replace(/\//g, '_');
+        console.log("[getHomeplusCategoryName]: 카테고리 이름: ", categoryName);
+    }
+
+    return categoryName;
 }
 
 // Gmarket의 카테고리 추출

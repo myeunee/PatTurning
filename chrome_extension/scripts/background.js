@@ -55,7 +55,7 @@ async function fetchDataFromServer(action, payload) {
         if (platform === 'Oasis') {
             url = `${priceUrl}/price-info/${platform}/${productId}`;
         } else {
-            url = `${priceUrl}/price-info/${platform}/${productId}/${categoryName || ''}`;
+            url = `${priceUrl}/price-info/${platform}/${categoryName || ''}/${productId}`;
         }
 
         const options = { method: 'GET' };
