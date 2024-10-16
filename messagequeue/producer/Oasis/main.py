@@ -18,19 +18,19 @@ async def crawl():
         universal_newlines=True,
     )
 
-    # # 로그 비동기 출력
-    # async def stream_Oasis_logs():
-    #     while True:
-    #         line = process.stdout.readline()
-    #         if line:
-    #             print(f"[Oasis Crawl Log] {line.strip()}")
-    #             sys.stdout.flush()  # 로그를 즉시 출력
-    #         if not line and process.poll() is not None:
-    #             break
-    #         await asyncio.sleep(0)
+    # 로그 비동기 출력
+    async def stream_Oasis_logs():
+        while True:
+            line = process.stdout.readline()
+            if line:
+                print(f"[Oasis Crawl Log] {line.strip()}")
+                sys.stdout.flush()  # 로그를 즉시 출력
+            if not line and process.poll() is not None:
+                break
+            await asyncio.sleep(0)
 
-    # # 로그를 비동기적으로 처리
-    # await stream_Oasis_logs()
+    # 로그를 비동기적으로 처리
+    await stream_Oasis_logs()
 
     # 프로세스 종료 대기
     process.wait()
