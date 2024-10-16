@@ -48,12 +48,12 @@ switchElement.addEventListener('change', (event) => {
     if (event.target.checked) {
         // detectDarkPatterns 활성화
         chrome.storage.local.set({ darkPatternDetection: true }, () => {
-            sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴이 감지되지 않았습니다.");
+            sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴 탐지 스위치 ON");
         });
     } else {
         // releaseDarkPatterns 비활성화
         chrome.storage.local.set({ darkPatternDetection: false }, () => {
-            sendMessage("releaseDarkPatterns", "다크 패턴 탐지 스위치 OFF", "다크 패턴을 해제할 수 없습니다.");
+            sendMessage("releaseDarkPatterns", "다크 패턴 탐지 스위치 OFF", "다크 패턴 탐지 스위치 OFF");
         });
     }
 });
