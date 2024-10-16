@@ -29,14 +29,14 @@ public class PriceController {
      *  가격 정보를 담은 Price 객체(platform/category_name/product_id에 해당)를 반환
      *
      */
-    @GetMapping("{platform}/{product_id}/**")
-    public Price getPriceInfo(@PathVariable String platform, HttpServletRequest request, @PathVariable String product_id) {
-        String restOfPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-        String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-        String category_name_with_separator = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, restOfPath);
-
-        category_name_with_separator = UriUtils.decode(category_name_with_separator, StandardCharsets.UTF_8);
-        String category_name = category_name_with_separator.replace("/", "_");
+    @GetMapping("{platform}/{category_name}/{product_id}")
+    public Price getPriceInfo(@PathVariable String platform, @PathVariable String category_name, @PathVariable String product_id) {
+//        String restOfPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+//        String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+//        String category_name_with_separator = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, restOfPath);
+//
+//        category_name_with_separator = UriUtils.decode(category_name_with_separator, StandardCharsets.UTF_8);
+//        String category_name = category_name_with_separator.replace("/", "_");
 
         return priceService.getProductDetails(platform, category_name, product_id);
     }
