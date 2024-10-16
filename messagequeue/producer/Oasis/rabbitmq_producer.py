@@ -12,9 +12,11 @@ class RabbitMQProducer:
         self.password = password
         self.queue = queue
 
-        # RabbitMQ 서버에 연결하기 위한 인증 정보 설정
+    def produce(self, data):
+        # RabbitMQ 인증 정보
         credentials = pika.PlainCredentials(self.username, self.password)
-        # RabbitMQ 서버에 연결 설정
+
+        # 연결 설정
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.host,
@@ -23,11 +25,8 @@ class RabbitMQProducer:
                 credentials=credentials,
             )
         )
-
-        self.channel = self.connection.channel()  # 채널 생성
-        self.channel.queue_declare(queue=self.queue, durable=True)
-
-    def produce(self, data):
+        channel = self.connection.channel()
+        channel.queue_declare(queue=self.queue, durable=True)
 
         # data가 리스트일 경우, 리스트의 각 딕셔너리를 개별적으로 전송
         if isinstance(data, list):
@@ -36,7 +35,7 @@ class RabbitMQProducer:
                 if isinstance(item, dict):
                     json_message = json.dumps(item).encode("utf-8")
                     try:
-                        self.channel.basic_publish(
+                        channel.basic_publish(
                             exchange="",
                             routing_key=self.queue,
                             body=json_message,
@@ -51,7 +50,7 @@ class RabbitMQProducer:
             # 단일 데이터를 JSON으로 직렬화하여 전송
             json_message = json.dumps(data).encode("utf-8")
             try:
-                self.channel.basic_publish(
+                channel.basic_publish(
                     exchange="",
                     routing_key=self.queue,
                     body=json_message,
