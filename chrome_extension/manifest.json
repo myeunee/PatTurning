@@ -1,34 +1,50 @@
 {
-    "manifest_version": 3,
-    "name": "PatTurning",
-    "description": "Extension for Dark Pattern Detection",
-    "version": "1.3",
-    "permissions": ["activeTab", "storage", "tabs"],
-    "host_permissions": [
-      "YOUR_DARK_PATTERN_API",
-      "YOUR_PRICE_API",
-      "*://*/*"
-    ],
-    "content_security_policy": {
-      "extension_pages": "default-src 'self'; connect-src YOUR_PRICE_API"
-    },
-    "background": {
-      "service_worker": "scripts/background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["scripts/content-script.js"]
-      }
-    ],
-    "action": {
-      "default_popup": "popup/popup.html",
-      "default_icon": "images/logo3.png"  
-    },
-    "web_accessible_resources": [
-        {
-          "resources": ["fonts/*", "scripts/chart.umd.js", "scripts/renderPriceChart.js"], 
-          "matches": ["<all_urls>"]
-        }
+  "manifest_version": 3,
+  "name": "PatTurning",
+  "description": "Extension for Dark Pattern Detection",
+  "version": "1.3",
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": [
+    "YOUR_DARK_PATTERN_API",
+    "YOUR_PRICE_API"
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; connect-src YOUR_PRICE_API",
+    "connect-src": [
+        "'self'",
+        "YOUR_DARK_PATTERN_API",
+        "YOUR_PRICE_API"
     ]
+  },
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.temu.com/*",
+        "*://*.homeplus.co.kr/*",
+        "*://*.oasis.co.kr/*",
+        "*://*.danawa.com/*",
+        "*://*.coupang.com/*"
+      ],
+      "js": ["scripts/content-script.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "images/logo3.png"  
+  },
+  "web_accessible_resources": [
+      {
+        "resources": ["fonts/*", "scripts/chart.umd.js", "scripts/renderPriceChart.js"], 
+        "matches": [
+          "*://*.temu.com/*",
+          "*://*.homeplus.co.kr/*",
+          "*://*.oasis.co.kr/*",
+          "*://*.danawa.com/*",
+          "*://*.coupang.com/*"
+        ]
+      }
+  ]
 }
