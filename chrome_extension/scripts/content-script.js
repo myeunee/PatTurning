@@ -1,7 +1,6 @@
 const darkUrl = "YOUR_DARK_PATTERN_API";
 const priceUrl = "YOUR_PRICE_API";
 
-
 // 페이지가 로드되거나 갱신될 때마다 다크패턴을 자동으로 탐지
 chrome.storage.local.get("darkPatternDetection", (result) => {
     if (result.darkPatternDetection) {

@@ -62,37 +62,56 @@ switchElement.addEventListener('change', (event) => {
 // 체크된 버튼의 라벨 값 관리
 document.addEventListener('DOMContentLoaded', () => {
     const checkboxes = document.querySelectorAll('.filter-checkbox');
-    const labelFiltersDiv = document.getElementById('label-filters');
+    const labelFiltersContainer = document.getElementById('label-filters-container');
     const switchInput = document.getElementById('switch');
 
-    // 스위치 초기 상태에 따라 체크박스 표시 제어
-    chrome.storage.local.get('darkPatternDetection', (result) => {
-        if (result.darkPatternDetection === true) {
-            switchInput.checked = true;
-            labelFiltersContainer.style.display = 'block'; // 스위치가 켜져 있으면 전체 컨테이너 표시
-        } else {
-            switchInput.checked = false;
-            labelFiltersContainer.style.display = 'none'; // 스위치가 꺼져 있으면 전체 컨테이너 숨김
+    // 기본 상태를 ON으로 설정하고, 체크박스 모두 선택
+    chrome.storage.local.get(['darkPatternDetection', 'checkedLabels'], (result) => {
+        const darkPatternDetection = result.darkPatternDetection !== undefined ? result.darkPatternDetection : true;
+        const checkedLabels = result.checkedLabels || [1, 2, 3, 4];
+
+        switchInput.checked = darkPatternDetection;
+        labelFiltersContainer.style.display = darkPatternDetection ? 'block' : 'none';
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = checkedLabels.includes(parseInt(checkbox.value));
+        });
+
+        if (darkPatternDetection) {
+            // 스위치가 켜져 있으면 기능 실행
+            sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴 탐지 스위치 ON");
         }
     });
 
-    // 스위치 상태에 따라 체크박스 표시 제어
-    switchInput.addEventListener('change', () => {
-        if (switchInput.checked) {
-            labelFiltersContainer.style.display = 'block';  // 스위치가 켜지면 체크박스들 포함한 전체 컨테이너 표시
-        } else {
-            labelFiltersContainer.style.display = 'none';   // 스위치가 꺼지면 체크박스들 포함한 전체 컨테이너 숨김
-        }
+    // 스위치 상태 변경 시 모든 체크박스와 기능 켜기/끄기
+    switchInput.addEventListener('change', (event) => {
+        const isChecked = event.target.checked;
+        chrome.storage.local.set({ darkPatternDetection: isChecked }, () => {
+            if (isChecked) {
+                checkboxes.forEach(checkbox => checkbox.checked = true);
+                chrome.storage.local.set({ checkedLabels: [1, 2, 3, 4] }, () => {
+                    sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴 탐지 스위치 ON");
+                    labelFiltersContainer.style.display = 'block';
+                });
+            } else {
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                chrome.storage.local.set({ checkedLabels: [] }, () => {
+                    sendMessage("releaseDarkPatterns", "다크 패턴 탐지 스위치 OFF", "다크 패턴 탐지 스위치 OFF");
+                    labelFiltersContainer.style.display = 'none';
+                });
+            }
+        });
     });
 
-    // 체크박스 상태 변경 이벤트 처리
+    // 체크박스 상태 변경 시 해당 기능 바로 실행/해제
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const checkedLabels = Array.from(checkboxes)
                 .filter(cb => cb.checked)
                 .map(cb => parseInt(cb.value));
-            chrome.storage.local.set({ 'checkedLabels': checkedLabels }, () => {
-                console.log('Selected labels:', checkedLabels);
+            chrome.storage.local.set({ checkedLabels }, () => {
+                console.log('Updated checked labels:', checkedLabels);
+                // 각 체크박스 상태에 맞는 기능 실행 (추가 기능 구현 필요 시 여기에 추가)
             });
         });
     });
