@@ -40,24 +40,24 @@ function updateStatus(message) {
     }
 }
 
-
-
 const switchElement = document.getElementById('switch');
+const labelFiltersContainer = document.getElementById('label-filters-container'); // label-filters-container 가져오기
 
 switchElement.addEventListener('change', (event) => {
     if (event.target.checked) {
         // detectDarkPatterns 활성화
         chrome.storage.local.set({ darkPatternDetection: true }, () => {
             sendMessage("detectDarkPatterns", "다크 패턴 탐지 스위치 ON", "다크 패턴 탐지 스위치 ON");
+            labelFiltersContainer.style.display = 'block'; // 스위치가 켜져 있으면 label-filters-container 보이기
         });
     } else {
         // releaseDarkPatterns 비활성화
         chrome.storage.local.set({ darkPatternDetection: false }, () => {
             sendMessage("releaseDarkPatterns", "다크 패턴 탐지 스위치 OFF", "다크 패턴 탐지 스위치 OFF");
+            labelFiltersContainer.style.display = 'none'; // 스위치가 꺼져 있으면 label-filters-container 숨기기
         });
     }
 });
-
 
 // 체크된 버튼의 라벨 값 관리
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,19 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get('darkPatternDetection', (result) => {
         if (result.darkPatternDetection === true) {
             switchInput.checked = true;
-            labelFiltersDiv.style.display = 'block'; // 스위치가 켜져 있으면 체크박스 표시
+            labelFiltersContainer.style.display = 'block'; // 스위치가 켜져 있으면 전체 컨테이너 표시
         } else {
             switchInput.checked = false;
-            labelFiltersDiv.style.display = 'none'; // 스위치가 꺼져 있으면 체크박스 숨김
+            labelFiltersContainer.style.display = 'none'; // 스위치가 꺼져 있으면 전체 컨테이너 숨김
         }
     });
 
     // 스위치 상태에 따라 체크박스 표시 제어
     switchInput.addEventListener('change', () => {
         if (switchInput.checked) {
-            labelFiltersDiv.style.display = 'block';  // 스위치가 켜지면 체크박스들 표시
+            labelFiltersContainer.style.display = 'block';  // 스위치가 켜지면 체크박스들 포함한 전체 컨테이너 표시
         } else {
-            labelFiltersDiv.style.display = 'none';   // 스위치가 꺼지면 체크박스들 숨김
+            labelFiltersContainer.style.display = 'none';   // 스위치가 꺼지면 체크박스들 포함한 전체 컨테이너 숨김
         }
     });
 
@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
 
 
 // 다크패턴 전송 기능 핸들러
