@@ -169,6 +169,7 @@
                             lineWidth: 1,   // 큰 그리드 선
                         },
                         ticks: {
+                            display: false, // 날짜 숨김
                             autoSkip: false,  // 모든 라벨 표시 (빈 라벨은 생략)
                         }
                     },
