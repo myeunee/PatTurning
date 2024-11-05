@@ -74,3 +74,6 @@ with DAG(
         run_consumer_task,  # Consumer
         send_post_request_HOMEPLUS_task.expand(category_id=category_ids),  # Producer
     ] >> collect_task_results_task >> send_summary_email  # Task 결과 수집 후 이메일 전송
+    
+    
+    ###

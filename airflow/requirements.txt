@@ -136,7 +136,6 @@ swagger-ui-bundle==0.0.9
 tabulate==0.9.0
 tenacity==8.1.0
 termcolor==2.0.1
-text-unidecode==1.3
 typing_extensions==4.12.2
 tzdata==2024.1
 uc-micro-py==1.0.1
