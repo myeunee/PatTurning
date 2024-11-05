@@ -5,7 +5,6 @@ on:
     paths:
       - "messagequeue/consumer/HomePlus_consumer.py"
       - "messagequeue/consumer/Oasis_consumer.py"
-      - "messagequeue/consumer/Posty_consumer.py"
     branches:
       - main  # 원하는 브랜치로 설정 가능
 
@@ -32,6 +31,5 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/HomePlus_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/HomePlus_consumer.py
         rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/Oasis_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Oasis_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/Posty_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Posty_consumer.py
 
          
