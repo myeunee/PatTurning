@@ -30,8 +30,8 @@ jobs:
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/HomePlus_consumer.py ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/HomePlus_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Oasis_consumer.py ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Oasis_consumer.py
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./messagequeue/consumer/Posty_consumer.py ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Posty_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/HomePlus_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/HomePlus_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/Oasis_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Oasis_consumer.py
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/Posty_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Posty_consumer.py
 
          
