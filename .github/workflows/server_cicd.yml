@@ -16,51 +16,65 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Set up JDK
-      #   uses: actions/setup-java@v3
+      # - name: Deliver jar File to Internal Server through Bastion Host
+      #   env:
+      #     GCE_USER_HOME: ${{ secrets.GCE_USER_HOME }}
+      #   if: success()
+      #   uses: appleboy/scp-action@v0.1.7
       #   with:
-      #     java-version: '17'
-      #     distribution: 'temurin'
+      #     host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} 
+      #     username: ${{ secrets.GCP_SERVER_VM_USER }} 
+      #     key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
+      #     proxy_host: ${{ secrets.GCP_SERVER_VM_HOST }} 
+      #     proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
+      #     proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+      #     source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
+      #     target: ${{ secrets.GCE_USER_HOME }}/deployment/
 
-      # - name: Set up Gradle
-      #   uses: gradle/gradle-build-action@v3
+      # - name: Deploy to Internal Server through Bastion Host
+      #   env:
+      #     GCE_USER_HOME: ${{ secrets.GCE_USER_HOME }}
+      #   if: success()
+      #   uses: appleboy/ssh-action@master
       #   with:
-      #     gradle-version: '8.8'
+      #     host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} 
+      #     username: ${{ secrets.GCP_SERVER_VM_USER }} 
+      #     key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
+      #     port: 22
+      #     proxy_host: ${{ secrets.GCP_SERVER_VM_HOST }} 
+      #     proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
+      #     proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+      #     proxy_port: 22
+      #     script: |
+      #         sudo docker image prune -f
+      #         sudo docker stop swdc-container || true
+      #         sudo docker rm swdc-container || true
 
-      # - name: Build with Gradle
-      #   run: |
-      #     cd server
-      #     ./gradlew build -x test
-
-      - name: Deliver jar File to Internal Server through Bastion Host
+      #         cd ${{ secrets.GCE_USER_HOME }}/deployment
+      #         sudo docker build -t swdc-app .
+      #         sudo docker run -d -p 8080:8080 --name swdc-container -v /mnt:/mnt swdc-app
+      - name: Deliver jar File to server
         env:
           GCE_USER_HOME: ${{ secrets.GCE_USER_HOME }}
         if: success()
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} 
+          host: ${{ secrets.GCP_SERVER_VM_HOST }} 
           username: ${{ secrets.GCP_SERVER_VM_USER }} 
-          key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
-          proxy_host: ${{ secrets.GCP_SERVER_VM_HOST }} 
-          proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
-          proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
+          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
           source: server/build/libs/swdc-0.0.1-SNAPSHOT.jar
           target: ${{ secrets.GCE_USER_HOME }}/deployment/
 
-      - name: Deploy to Internal Server through Bastion Host
+      - name: Deploy to Server 
         env:
           GCE_USER_HOME: ${{ secrets.GCE_USER_HOME }}
         if: success()
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.GCP_INTERNAL_SERVER_VM_HOST }} 
+          host: ${{ secrets.GCP_SERVER_VM_HOST }} 
           username: ${{ secrets.GCP_SERVER_VM_USER }} 
-          key: ${{ secrets.GCP_INTERNAL_SERVER_SSH_PRIVATE_KEY }} 
+          key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
           port: 22
-          proxy_host: ${{ secrets.GCP_SERVER_VM_HOST }} 
-          proxy_username: ${{ secrets.GCP_SERVER_VM_USER }} 
-          proxy_key: ${{ secrets.GCP_SERVER_SSH_PRIVATE_KEY }} 
-          proxy_port: 22
           script: |
               sudo docker image prune -f
               sudo docker stop swdc-container || true
