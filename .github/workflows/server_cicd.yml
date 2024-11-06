@@ -3,8 +3,8 @@ name: server CI/CD Pipeline
 
 on:
   push:
-    # paths: 
-    #   - "server/build/libs/**"
+    paths: 
+      - "server/build/libs/**"
     branches:
       - main
 
