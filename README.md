@@ -31,11 +31,11 @@ Check out the documentation [in the website](https://patturning-official.shop/).
 
 ## Contribution
 
-Check out the documentation [in the website](https://).
+Check out the documentation [in the website](https://patturning-official.shop/).
 
 ## License
 
-Patturning is distributed under the terms of the Apache License (Version 2.0).  
+Patturning is distributed under the terms of the GPL-3.0.  
 See [LICENSE](LICENSE) for details.
 
 
