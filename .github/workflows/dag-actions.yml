@@ -35,15 +35,12 @@ jobs:
           GCE_IP: ${{ secrets.GCE_IP }}
           GCE_USER: ${{ secrets.GCE_USER }}
           GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
-          GCE_SSH_PUBLIC_KEY: ${{ secrets.GCE_SSH_PUBLIC_KEY }}
           GCE_AIRFLOW_HOME: ${{ secrets.GCE_AIRFLOW_HOME }}
         run: |
           mkdir -p ~/.ssh
           echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-          echo "${GCE_SSH_PUBLIC_KEY}" >> ~/.ssh/authorized_keys
           chmod 600 ~/.ssh/id_rsa
           chmod 700 ~/.ssh
-          chmod 600 ~/.ssh/authorized_keys
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/HomePlus_dag.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/HomePlus_dag.py
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/Oasis_dag.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/Oasis_dag.py
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/requirements/modules.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/requirements/modules.py
