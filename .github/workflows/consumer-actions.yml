@@ -24,15 +24,12 @@ jobs:
         GCE_IP: ${{ secrets.GCE_IP }}
         GCE_USER: ${{ secrets.GCE_USER }}
         GCE_SSH_PRIVATE_KEY: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
-        GCE_SSH_PUBLIC_KEY: ${{ secrets.GCE_SSH_PUBLIC_KEY }}
         GCE_USER_HOME: ${{ secrets.GCE_USER_HOME }}
       run: |
         mkdir -p ~/.ssh
         echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-        echo "${GCE_SSH_PUBLIC_KEY}" >> ~/.ssh/authorized_keys
         chmod 600 ~/.ssh/id_rsa
         chmod 700 ~/.ssh
-        chmod 600 ~/.ssh/authorized_keys
         rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/HomePlus_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/HomePlus_consumer.py
         rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/messagequeue/consumer/Oasis_consumer.py" ${GCE_USER}@${GCE_IP}:${GCE_USER_HOME}/Oasis_consumer.py
 
