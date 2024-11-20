@@ -110,3 +110,4 @@ logging.info('Waiting for messages. To exit press CTRL+C') # 메시지 수신 �
 reset_timer() # 타이머 초기화
 channel.start_consuming() # 메시지 수신 시작
 
+### git actions test
