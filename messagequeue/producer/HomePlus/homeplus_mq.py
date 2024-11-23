@@ -29,6 +29,7 @@ def config():
 
 # categoryId에 대한 데이터 수집 & rabbitmq로 전송
 def produce_data(categoryId):
+    global total_num
     total_start = time.time() # 전체 처리 시간 측정
 
     # RabbitMQ 채널 및 큐 설정
@@ -92,9 +93,12 @@ def produce_data(categoryId):
             spent_time = (end_time-start_time)
             spent_time_s = datetime.timedelta(seconds=spent_time)
 
-            logging.info(f"Pushing Product ID[{product_id}] with price {price}원 to MQ")
+            # logging.info(f"Pushing Product ID[{product_id}] with price {price}원 to MQ")
             logging.info(f"time spent {spent_time_s}")
-
+    number_per_category = 100 * (totalPages - 1) + len(product_ids)
+    logging.info(f"CategoryName[{category_name}] collected the number of ***{100 * (totalPages - 1) + len(product_ids)}***")
+    total_num += number_per_category
+    
     total_end = time.time() # 전체 처리 시간 측정 종료
     total_spent_time = (total_end - total_start)
     total_spent_time_s = datetime.timedelta(seconds=total_spent_time)
@@ -104,6 +108,7 @@ def produce_data(categoryId):
 
     return total_spent_time_s
 
+total_num = 0
 app = Flask(__name__)
 
 # HTTP POST 요청 처리 엔드포인트
@@ -118,7 +123,7 @@ def trigger_rabbitmq_producer():
     
     # HTTP 요청 시 데이터 수집 후 RabbitMQ로 전송
     spent_time = produce_data(category_id)
-    return jsonify({"message": f"collected ALL categoryId[{category_id}] products, Total time spent {spent_time}"}), 200
+    return jsonify({"message": f"collected ALL categoryId[{category_id}] products, Total time spent {spent_time} and total number of {total_num}"}), 200
 
 # Cloud Run이 기본적으로 사용하는 포트 설정
 if __name__ == "__main__":

@@ -39,7 +39,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${GCE_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa  # SSH 키 권한 설정
+          chmod 600 ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/HomePlus_dag.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/HomePlus_dag.py
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/Oasis_dag.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/Oasis_dag.py
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$GITHUB_WORKSPACE/airflow/requirements/modules.py" ${GCE_USER}@${GCE_IP}:${GCE_AIRFLOW_HOME}/dags/requirements/modules.py

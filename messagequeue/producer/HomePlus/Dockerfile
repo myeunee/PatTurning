@@ -1,17 +1,16 @@
-# base image: Python 3.9
+# Python 3.9을 베이스 이미지로 사용
 FROM python:3.9-slim
 
-# configure working directory
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# python 의존성 패키지 파일 & 실행 파일 복사
+# 필요한 파일 복사
 COPY requirements.txt requirements.txt
 COPY homeplus_mq.py app.py
 
-# install packages
+# 패키지 설치
 RUN pip install -r requirements.txt
 
-# 컨테이너의 8080 포트를 외부에 노출
 EXPOSE 8080
 
 # Flask 앱 실행
