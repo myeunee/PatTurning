@@ -103,3 +103,19 @@ body {
   text-align: center;
   line-height: 1.5; /* Added line height for better readability */
 }
+
+#label-filters-container {
+  display: block;
+  text-align: left;
+  padding: 20px;
+  border: 1px solid #ccc; /* optional: border around the whole block */
+  border-radius: 5px; /* optional: rounded corners for the block */
+  background-color: #f9f9f9; /* optional: background color */
+  width: fit-content; /* adjusts width to fit content */
+  margin: auto; /* centers the block */
+}
+
+#label-filters label {
+  display: block;
+  margin-bottom: 10px;
+}
