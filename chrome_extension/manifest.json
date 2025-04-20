@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PatTurning",
   "description": "Extension for Dark Pattern Detection",
-  "version": "1.3",
+  "version": "2",
   "permissions": ["activeTab", "storage", "tabs"],
   "host_permissions": [
     "YOUR_DARK_PATTERN_API",
